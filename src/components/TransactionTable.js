@@ -12,11 +12,10 @@ const styles = theme => ({
   paper: {
     padding: 16,
     overflowY: 'scroll',
-    maxHeight: '50%',
+    height: '90%',
   },
   heading: {
     textAlign: 'center',
-    paddingTop: 16,
     paddingBottom: 16,
   },
   transactions: {
