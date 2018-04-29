@@ -1,6 +1,5 @@
 import 'isomorphic-fetch';
 import {baseUrl} from '../config';
-
 const headers = {
   'Content-Type': 'application/json'
 }
