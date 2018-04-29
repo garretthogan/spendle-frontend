@@ -13,6 +13,7 @@ const styles = theme => ({
     padding: 16,
     overflowY: 'scroll',
     height: '90%',
+    maxHeight: '90%',
   },
   heading: {
     textAlign: 'center',
