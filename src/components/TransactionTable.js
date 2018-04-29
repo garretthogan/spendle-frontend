@@ -32,12 +32,12 @@ function PaperSheet(props) {
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={4}>
         <Typography className={classes.heading} variant="title" component="h3">
-          You've spent <b>${total}</b> this month!
+          You've spent <b>${total.toFixed(2)}</b> this month!
         </Typography>
         <Divider />
         <div className={classes.transactions}>
           {transactions.map(t => (
-            <Typography key={t.transaction_id} component="p">{t.name.toUpperCase()}: <b>${t.amount}</b></Typography>
+            <Typography key={t.transaction_id} component="p">{t.name.toUpperCase().substr(0, 16)}: <b>${t.amount.toFixed(2)}</b></Typography>
           ))}
         </div>
       </Paper>
