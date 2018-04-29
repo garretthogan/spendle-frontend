@@ -1,0 +1,8 @@
+body {
+  background: linear-gradient(45deg, #2979ff 30%, #00e5ff 90%);
+  height: 100vh;
+}
+
+#root {
+  height: 100%;
+}
