@@ -31,7 +31,7 @@ class BankAccessPage extends Component {
     super(props);
     this.state = {
       handler: null,
-      loading: false,
+      loading: true,
     };
   }
   componentDidMount() {
@@ -46,6 +46,7 @@ class BankAccessPage extends Component {
       });
       this.setState({
         handler,
+        loading: false,
       });      
     });
   }
