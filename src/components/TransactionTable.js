@@ -5,14 +5,18 @@ import Typography from 'material-ui/Typography';
 import Divider from 'material-ui/Divider';
 
 const styles = theme => ({
-  root: theme.mixins.gutters({
-    height: '100%',
-    padding: 16,
-  }),
+  root: {
+    position: 'absolute',
+    top: '2.5%',
+    left: '5%',
+    width: '90%',
+    animationDuration: '1s',
+    animationName: 'slidein',
+    overflowY: 'scroll',
+    maxHeight: '60%',
+  },
   paper: {
     padding: 16,
-    overflowY: 'scroll',
-    maxHeight: '90%',
   },
   heading: {
     textAlign: 'center',
@@ -28,7 +32,7 @@ function PaperSheet(props) {
   const amounts = transactions.map(t => t.amount);
   const total = amounts.reduce((a, b) => (a + b), 0);
   return (
-    <div className={classes.root}>
+    <div className={`${classes.root} transaction-table`}>
       <Paper className={classes.paper} elevation={4}>
         <Typography className={classes.heading} variant="title" component="h3">
           You've spent <b>${total.toFixed(2)}</b> this month!
