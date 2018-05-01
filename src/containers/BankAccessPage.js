@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { bindActionCreators } from 'redux';
 import Button from 'material-ui/Button';
+import Slide from 'material-ui/transitions/Slide';
 import { getPublicKey, getAccessToken } from '../api/plaid';
 import { withStyles } from 'material-ui/styles';
 import {plaidEnv} from '../config';
@@ -11,15 +12,6 @@ import {
 import { connect } from 'react-redux';
 
 const styles = theme => ({
-  button: {
-    paddingTop: 12,
-    paddingBottom: 12,
-    paddingLeft: 16,
-    paddingRight: 16,
-    color: 'white',
-    top: '50%',
-    borderRadius: 500,
-  },
   buttonContainer: {
     height: '100%',
     textAlign: 'center',
@@ -32,6 +24,7 @@ class BankAccessPage extends Component {
     this.state = {
       handler: null,
       loading: true,
+      fadeOut: false,
     };
   }
   componentDidMount() {
@@ -43,6 +36,7 @@ class BankAccessPage extends Component {
         product: ['transactions'],
         key: public_key,
         onSuccess: this.onSuccess,
+        onExit: this.onExit,
       });
       this.setState({
         handler,
@@ -53,8 +47,13 @@ class BankAccessPage extends Component {
   openBankSelector = () => {
     const { handler } = this.state;
     if (handler) {
-      handler.open();
-      this.setState({loading: true});
+      setTimeout(() => {
+        handler.open();
+      }, 500);
+      this.setState({
+        loading: true,
+        fadeOut: true,
+      });
     }
   }
   onSuccess = (token, metadata) => {
@@ -62,13 +61,30 @@ class BankAccessPage extends Component {
       this.props.history.push(`/transactions/${access_token}`);
     });
   }
+  onExit = () => {
+    this.setState({
+      loading: false,
+      fadeOut: false,
+    });
+  }
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.buttonContainer}>
-        {!(this.state.loading) &&
-        <Button className={classes.button} onClick={this.openBankSelector}>Link an account</Button>}
-      </div>      
+      <Slide
+        in={!this.state.loading && !this.state.fadeOut}
+        exit={this.state.fadeOut}
+        direction="right"
+        timeout={{
+          enter: 1000,
+          exit: 1000
+        }}
+      >
+        <div className={classes.buttonContainer}>
+          <Button onClick={this.openBankSelector}>
+            Connect a bank account
+          </Button>
+        </div>
+      </Slide>
     );
   }
 }

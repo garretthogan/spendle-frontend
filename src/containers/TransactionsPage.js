@@ -1,53 +1,34 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
-import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
-import Divider from 'material-ui/Divider';
+import Slide from 'material-ui/transitions/Slide';
+import Button from 'material-ui/Button';
 import {bindActionCreators} from 'redux';
 import {onTransactionsLoaded} from '../actions';
 import { connect } from 'react-redux';
 import { getTransactions } from '../api/plaid';
-import AnimatedButton from './AnimatedButton';
-
-const BUTTON_ANIM_DELAY = 2;
 
 const styles = theme => ({
   root: {
-    position: 'absolute',
-    width: '100%',
-    height: '90%',
+    height: '100%',
   },
   tableContainer: {
     width: '100%',
-    left: '5%',
-    top: '2.5%',
-    maxHeight: '60%',
+    top: '42.5%',
     position: 'absolute',
-    overflowY: 'scroll',
-    animationDuration: '1s',
-    animationName: 'slidein',
-  },
-  paper: {
-    width: '90%',
+    overflowX: 'hidden',
   },
   heading: {
     textAlign: 'center',
     padding: 16,
+    color: 'white',
   },
   transactions: {
     padding: 16,
   },
-  button: {
-    color: 'white',
-    top: '65%',
-    borderRadius: 500,
-  },
   buttonContainer: {
     height: '100%',
     textAlign: 'center',
-    animationDelay: `${BUTTON_ANIM_DELAY}s`,
-    animationDuration: '1s',
-    animationName: 'buttonslideanim'
   } 
 });
 
@@ -56,6 +37,8 @@ class TransactionsPage extends Component {
     super(props);
     this.state = {
       loading: true,
+      showCreateBudget: false,
+      fadeOut: false,
     }
   }
   componentDidMount() {
@@ -73,41 +56,71 @@ class TransactionsPage extends Component {
       onTransactionsLoaded(transactions);
       this.setState({loading: false});
     });
+
+    setTimeout(() => {
+      this.setState({
+        showCreateBudget: true,
+      });
+    }, 2500);
   }
   createBudget = () => {
-
+    const { match: { params: { accessToken } }, history } = this.props;
+    this.setState({
+      fadeOut: true,
+    });
+    setTimeout(() => {
+      history.push(`/create-budget/${accessToken}`);
+    }, 1250);
   }
   renderTable = () => {
     const { classes, transactions } = this.props;
-    const amounts = transactions.map(t => t.amount);
-    const total = amounts.reduce((a, b) => (a + b), 0);
+    const { loading, fadeOut } = this.state;
+    const amounts = !loading ? transactions.map(t => t.amount) : 0;
+    const total = !loading ? amounts.reduce((a, b) => (a + b), 0) : 0;
+    const fadeIn = !loading && !fadeOut;
 
     return (
-      <Paper className={classes.paper} elevation={4}>
-        <Typography className={classes.heading} variant="title" component="h3">
-          You've spent <b>${total.toFixed(2)}</b> this month!
-        </Typography>
-        <Divider />
-        <div className={classes.transactions}>
-          {transactions.map(t => (
-            <Typography key={t.transaction_id} component="p">{t.name.toUpperCase().substr(0, 16)}: <b>${t.amount.toFixed(2)}</b></Typography>
-          ))}
-          {transactions.map(t => (
-            <Typography key={t.transaction_id} component="p">{t.name.toUpperCase().substr(0, 16)}: <b>${t.amount.toFixed(2)}</b></Typography>
-          ))}
+      <Slide
+        direction="left"
+        exit={fadeOut}
+        in={fadeIn}
+        timeout={{
+          enter: 1000,
+          exit: 1000
+        }}
+      >
+        <div elevation={6}>
+          <Typography className={classes.heading} variant="title" component="h3">
+            You've spent about <b>${total.toFixed(0)}</b> this month!
+          </Typography>
         </div>
-      </Paper>
+      </Slide>
     );
   }
   render() {
     const { classes } = this.props;
+    const { loading, showCreateBudget, fadeOut } = this.state;
+    const fadeIn = (!loading && showCreateBudget && !fadeOut);
     return (
       <div className={classes.root}>
-        {!(this.state.loading) &&
-        [<div className={classes.tableContainer}>
+        <div className={classes.tableContainer}>
          {this.renderTable()}
-        </div>,
-        <AnimatedButton onClick={this.createBudget} animationDelay={BUTTON_ANIM_DELAY} className={classes.buttonContainer} label={'Create a budget'} />]}
+        </div>
+        <Slide
+          in={fadeIn}
+          exit={fadeOut}
+          direction="right"
+          timeout={{
+            enter: 1000,
+            leave: 1000
+          }}
+        >
+          <div className={classes.buttonContainer}>
+            <Button onClick={this.createBudget} >
+              Create a budget
+            </Button>
+          </div>
+        </Slide>
       </div>
     );    
   }
