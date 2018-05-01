@@ -19,7 +19,7 @@ const styles = theme => ({
   },
   tableContainer: {
     width: '100%',
-    left: '2.5%',
+    left: '5%',
     top: '2.5%',
     maxHeight: '60%',
     position: 'absolute',
@@ -28,7 +28,7 @@ const styles = theme => ({
     animationName: 'slidein',
   },
   paper: {
-    width: '95%',
+    width: '90%',
   },
   heading: {
     textAlign: 'center',
