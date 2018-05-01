@@ -24,7 +24,7 @@ const styles = theme => ({
     height: '100%',
     textAlign: 'center',
   }  
-})
+});
 
 class BankAccessPage extends Component {
   constructor(props) {

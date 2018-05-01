@@ -7,28 +7,48 @@ import {bindActionCreators} from 'redux';
 import {onTransactionsLoaded} from '../actions';
 import { connect } from 'react-redux';
 import { getTransactions } from '../api/plaid';
+import AnimatedButton from './AnimatedButton';
+
+const BUTTON_ANIM_DELAY = 2;
 
 const styles = theme => ({
   root: {
     position: 'absolute',
+    width: '100%',
+    height: '90%',
+  },
+  tableContainer: {
+    width: '100%',
+    left: '2.5%',
     top: '2.5%',
-    left: '5%',
-    width: '90%',
+    maxHeight: '60%',
+    position: 'absolute',
+    overflowY: 'scroll',
     animationDuration: '1s',
     animationName: 'slidein',
-    overflowY: 'scroll',
-    maxHeight: '60%',
   },
   paper: {
-    padding: 16,
+    width: '95%',
   },
   heading: {
     textAlign: 'center',
-    paddingBottom: 16,
+    padding: 16,
   },
   transactions: {
-    paddingTop: 16,
-  }
+    padding: 16,
+  },
+  button: {
+    color: 'white',
+    top: '65%',
+    borderRadius: 500,
+  },
+  buttonContainer: {
+    height: '100%',
+    textAlign: 'center',
+    animationDelay: `${BUTTON_ANIM_DELAY}s`,
+    animationDuration: '1s',
+    animationName: 'buttonslideanim'
+  } 
 });
 
 class TransactionsPage extends Component {
@@ -54,6 +74,9 @@ class TransactionsPage extends Component {
       this.setState({loading: false});
     });
   }
+  createBudget = () => {
+
+  }
   renderTable = () => {
     const { classes, transactions } = this.props;
     const amounts = transactions.map(t => t.amount);
@@ -69,18 +92,22 @@ class TransactionsPage extends Component {
           {transactions.map(t => (
             <Typography key={t.transaction_id} component="p">{t.name.toUpperCase().substr(0, 16)}: <b>${t.amount.toFixed(2)}</b></Typography>
           ))}
+          {transactions.map(t => (
+            <Typography key={t.transaction_id} component="p">{t.name.toUpperCase().substr(0, 16)}: <b>${t.amount.toFixed(2)}</b></Typography>
+          ))}
         </div>
-      </Paper>      
+      </Paper>
     );
   }
   render() {
     const { classes } = this.props;
     return (
-      <div>
+      <div className={classes.root}>
         {!(this.state.loading) &&
-        <div className={classes.root}>
+        [<div className={classes.tableContainer}>
          {this.renderTable()}
-        </div>}
+        </div>,
+        <AnimatedButton onClick={this.createBudget} animationDelay={BUTTON_ANIM_DELAY} className={classes.buttonContainer} label={'Create a budget'} />]}
       </div>
     );    
   }
