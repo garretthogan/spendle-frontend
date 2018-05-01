@@ -12,13 +12,14 @@ const theme = createMuiTheme({
   overrides: {
     MuiButton: {
       root: {
+        width: '100%',
         paddingTop: 12,
         paddingBottom: 12,
         paddingLeft: 16,
         paddingRight: 16,
         backgroundColor: 'white',
         top: '50%',
-        borderRadius: 3,
+        borderRadius: 10,
         '&:hover': {
           backgroundColor: 'white',
           boxShadow: '2px 2px 2px 2px rgba(0, 0, 0, 0.2)',

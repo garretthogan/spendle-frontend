@@ -27,6 +27,9 @@ const styles = theme => ({
     padding: 16,
   },
   buttonContainer: {
+    position: 'absolute',
+    left: '10%',
+    width: '80%',
     height: '100%',
     textAlign: 'center',
   } 
@@ -61,7 +64,7 @@ class TransactionsPage extends Component {
       this.setState({
         showCreateBudget: true,
       });
-    }, 2500);
+    }, 2000);
   }
   createBudget = () => {
     const { match: { params: { accessToken } }, history } = this.props;

@@ -13,9 +13,21 @@ import { connect } from 'react-redux';
 
 const styles = theme => ({
   buttonContainer: {
+    position: 'absolute',
+    left: '10%',
+    width: '80%',
     height: '100%',
     textAlign: 'center',
-  }  
+  },
+  welcome: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    textAlign: 'center',
+    top: '45%',
+    color: 'white',
+    fontSize: 24,
+  }
 });
 
 class BankAccessPage extends Component {
@@ -70,21 +82,26 @@ class BankAccessPage extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <Slide
-        in={!this.state.loading && !this.state.fadeOut}
-        exit={this.state.fadeOut}
-        direction="right"
-        timeout={{
-          enter: 1000,
-          exit: 1000
-        }}
-      >
-        <div className={classes.buttonContainer}>
-          <Button onClick={this.openBankSelector}>
-            Connect a bank account
-          </Button>
-        </div>
-      </Slide>
+      <div>
+        <Slide timeout={{enter: 1000, exit: 1000}} direction="left" in={!this.state.loading && !this.state.fadeOut}>
+          <div className={classes.welcome}>Welcome to Spendle!!</div>
+        </Slide>
+        <Slide
+          in={!this.state.loading && !this.state.fadeOut}
+          exit={this.state.fadeOut}
+          direction="right"
+          timeout={{
+            enter: 1000,
+            exit: 1000
+          }}
+        >
+          <div className={classes.buttonContainer}>
+            <Button onClick={this.openBankSelector}>
+              Connect a bank account
+            </Button>
+          </div>
+        </Slide>
+      </div>
     );
   }
 }
