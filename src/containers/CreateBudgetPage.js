@@ -41,8 +41,8 @@ const styles = theme => ({
 });
 /**
  * To do:
- * - Add enter and exit anims
  * - Insert comma based on budget value (1,000 10,000 etc)
+ * - Post budget to database
  */
 class CreateBudgetPage extends Component {
   constructor(props) {

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { bindActionCreators } from 'redux';
 import Button from 'material-ui/Button';
+import Typography from 'material-ui/Typography';
 import Slide from 'material-ui/transitions/Slide';
 import { getPublicKey, getAccessToken } from '../api/plaid';
 import { withStyles } from 'material-ui/styles';
@@ -13,20 +14,25 @@ import { connect } from 'react-redux';
 
 const styles = theme => ({
   buttonContainer: {
+    overflow: 'hidden',
     position: 'absolute',
     left: '10%',
     width: '80%',
     height: '100%',
     textAlign: 'center',
   },
-  welcome: {
+  welcomeText: {
+    overflow: 'hidden',
     position: 'absolute',
-    height: '100%',
     width: '100%',
+    top: '41%',
     textAlign: 'center',
-    top: '45%',
+  },
+  welcomeHeader: {
     color: 'white',
-    fontSize: 24,
+  },
+  welcomeBody: {
+    color: 'white',
   }
 });
 
@@ -83,21 +89,30 @@ class BankAccessPage extends Component {
     const { classes } = this.props;
     return (
       <div>
-        <Slide timeout={{enter: 1000, exit: 1000}} direction="left" in={!this.state.loading && !this.state.fadeOut}>
-          <div className={classes.welcome}>Welcome to Spendle!!</div>
-        </Slide>
         <Slide
-          in={!this.state.loading && !this.state.fadeOut}
-          exit={this.state.fadeOut}
-          direction="right"
           timeout={{
             enter: 1000,
             exit: 1000
           }}
+          direction="left"
+          in={!this.state.loading && !this.state.fadeOut}
+        >
+          <div className={classes.welcomeText}>
+            <Typography className={classes.welcomeHeader} variant="title">Welcome to Spendle</Typography>
+            <Typography className={classes.welcomeBody} variant="subheading">Connect a bank account to begin!</Typography>
+          </div>  
+        </Slide>
+        <Slide
+          timeout={{
+            enter: 1000,
+            exit: 1000
+          }}
+          direction="right"
+          in={!this.state.loading && !this.state.fadeOut}
         >
           <div className={classes.buttonContainer}>
             <Button onClick={this.openBankSelector}>
-              Connect a bank account
+              Connect account
             </Button>
           </div>
         </Slide>
