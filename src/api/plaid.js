@@ -20,3 +20,9 @@ export const getTransactions = (accessToken) => fetchToJson(`${baseUrl}/transact
   body: JSON.stringify({access_token: accessToken}),
   headers
 }).catch(console.log);
+
+export const createBudget = (amount, frequency = 'monthly') => fetchToJson(`${baseUrl}/create_budget`, {
+  method: 'POST',
+  body: JSON.stringify({amount, frequency}),
+  headers
+});

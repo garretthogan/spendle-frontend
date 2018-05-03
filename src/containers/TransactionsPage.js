@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
-import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
-import Divider from 'material-ui/Divider';
+import Grow from 'material-ui/transitions/Grow';
+import Loading from '../components/Loading';
+import Button from 'material-ui/Button';
 import {bindActionCreators} from 'redux';
 import {onTransactionsLoaded} from '../actions';
 import { connect } from 'react-redux';
@@ -10,24 +11,28 @@ import { getTransactions } from '../api/plaid';
 
 const styles = theme => ({
   root: {
-    position: 'absolute',
-    top: '2.5%',
-    left: '5%',
-    width: '90%',
-    animationDuration: '1s',
-    animationName: 'slidein',
-    overflowY: 'scroll',
-    maxHeight: '60%',
+    height: '100%',
   },
-  paper: {
-    padding: 16,
+  tableContainer: {
+    width: '100%',
+    top: '42.5%',
+    position: 'absolute',
+    overflowX: 'hidden',
   },
   heading: {
     textAlign: 'center',
-    paddingBottom: 16,
+    padding: 16,
+    color: 'white',
   },
   transactions: {
-    paddingTop: 16,
+    padding: 16,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    left: '10%',
+    width: '80%',
+    height: '100%',
+    textAlign: 'center',
   }
 });
 
@@ -36,6 +41,8 @@ class TransactionsPage extends Component {
     super(props);
     this.state = {
       loading: true,
+      showCreateBudget: false,
+      fadeOut: false,
     }
   }
   componentDidMount() {
@@ -53,34 +60,73 @@ class TransactionsPage extends Component {
       onTransactionsLoaded(transactions);
       this.setState({loading: false});
     });
+
+    setTimeout(() => {
+      this.setState({
+        showCreateBudget: true,
+      });
+    }, 2000);
+  }
+  createBudget = () => {
+    const { match: { params: { accessToken } }, history } = this.props;
+    this.setState({
+      fadeOut: true,
+      loading: true,
+    });
+    setTimeout(() => {
+      history.push(`/create-budget/${accessToken}`);
+    }, 1750);
   }
   renderTable = () => {
     const { classes, transactions } = this.props;
-    const amounts = transactions.map(t => t.amount);
-    const total = amounts.reduce((a, b) => (a + b), 0);
+    const { loading, fadeOut } = this.state;
+    const amounts = transactions ? transactions.map(t => t.amount) : 0;
+    const total = transactions ? amounts.reduce((a, b) => (a + b), 0) : 0;
+    const fadeIn = !loading && !fadeOut;
 
     return (
-      <Paper className={classes.paper} elevation={4}>
-        <Typography className={classes.heading} variant="title" component="h3">
-          You've spent <b>${total.toFixed(2)}</b> this month!
-        </Typography>
-        <Divider />
-        <div className={classes.transactions}>
-          {transactions.map(t => (
-            <Typography key={t.transaction_id} component="p">{t.name.toUpperCase().substr(0, 16)}: <b>${t.amount.toFixed(2)}</b></Typography>
-          ))}
+      <Grow
+        exit={fadeOut}
+        in={fadeIn}
+        timeout={{
+          enter: 1500,
+          exit: 1000
+        }}
+      >
+        <div>
+          <Typography className={classes.heading} variant="title" component="h3">
+            You've spent about <b>${total.toFixed(0)}</b> this month!
+          </Typography>
         </div>
-      </Paper>      
+      </Grow>
     );
   }
   render() {
     const { classes } = this.props;
+    const { loading, showCreateBudget, fadeOut } = this.state;
+    const fadeIn = (!loading && showCreateBudget && !fadeOut);
     return (
       <div>
-        {!(this.state.loading) &&
+        <Loading loading={loading} />
         <div className={classes.root}>
-         {this.renderTable()}
-        </div>}
+          <div className={classes.tableContainer}>
+          {this.renderTable()}
+          </div>
+          <Grow
+            in={fadeIn}
+            exit={fadeOut}
+            timeout={{
+              enter: 1500,
+              leave: 1000
+            }}
+          >
+            <div className={classes.buttonContainer}>
+              <Button onClick={this.createBudget} >
+                Create a budget
+              </Button>
+            </div>
+          </Grow>
+        </div>
       </div>
     );    
   }
