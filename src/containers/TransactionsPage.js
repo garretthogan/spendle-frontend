@@ -80,8 +80,8 @@ class TransactionsPage extends Component {
   renderTable = () => {
     const { classes, transactions } = this.props;
     const { loading, fadeOut } = this.state;
-    const amounts = !loading ? transactions.map(t => t.amount) : 0;
-    const total = !loading ? amounts.reduce((a, b) => (a + b), 0) : 0;
+    const amounts = transactions ? transactions.map(t => t.amount) : 0;
+    const total = transactions ? amounts.reduce((a, b) => (a + b), 0) : 0;
     const fadeIn = !loading && !fadeOut;
 
     return (
@@ -93,7 +93,7 @@ class TransactionsPage extends Component {
           exit: 1000
         }}
       >
-        <div elevation={6}>
+        <div>
           <Typography className={classes.heading} variant="title" component="h3">
             You've spent about <b>${total.toFixed(0)}</b> this month!
           </Typography>
