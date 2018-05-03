@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
-import Slide from 'material-ui/transitions/Slide';
+import Grow from 'material-ui/transitions/Grow';
+import Loading from '../components/Loading';
 import Button from 'material-ui/Button';
 import {bindActionCreators} from 'redux';
 import {onTransactionsLoaded} from '../actions';
@@ -32,7 +33,7 @@ const styles = theme => ({
     width: '80%',
     height: '100%',
     textAlign: 'center',
-  } 
+  }
 });
 
 class TransactionsPage extends Component {
@@ -70,10 +71,11 @@ class TransactionsPage extends Component {
     const { match: { params: { accessToken } }, history } = this.props;
     this.setState({
       fadeOut: true,
+      loading: true,
     });
     setTimeout(() => {
       history.push(`/create-budget/${accessToken}`);
-    }, 1250);
+    }, 1750);
   }
   renderTable = () => {
     const { classes, transactions } = this.props;
@@ -83,12 +85,11 @@ class TransactionsPage extends Component {
     const fadeIn = !loading && !fadeOut;
 
     return (
-      <Slide
-        direction="left"
+      <Grow
         exit={fadeOut}
         in={fadeIn}
         timeout={{
-          enter: 1000,
+          enter: 1500,
           exit: 1000
         }}
       >
@@ -97,7 +98,7 @@ class TransactionsPage extends Component {
             You've spent about <b>${total.toFixed(0)}</b> this month!
           </Typography>
         </div>
-      </Slide>
+      </Grow>
     );
   }
   render() {
@@ -105,25 +106,27 @@ class TransactionsPage extends Component {
     const { loading, showCreateBudget, fadeOut } = this.state;
     const fadeIn = (!loading && showCreateBudget && !fadeOut);
     return (
-      <div className={classes.root}>
-        <div className={classes.tableContainer}>
-         {this.renderTable()}
-        </div>
-        <Slide
-          in={fadeIn}
-          exit={fadeOut}
-          direction="right"
-          timeout={{
-            enter: 1000,
-            leave: 1000
-          }}
-        >
-          <div className={classes.buttonContainer}>
-            <Button onClick={this.createBudget} >
-              Create a budget
-            </Button>
+      <div>
+        <Loading loading={loading} />
+        <div className={classes.root}>
+          <div className={classes.tableContainer}>
+          {this.renderTable()}
           </div>
-        </Slide>
+          <Grow
+            in={fadeIn}
+            exit={fadeOut}
+            timeout={{
+              enter: 1500,
+              leave: 1000
+            }}
+          >
+            <div className={classes.buttonContainer}>
+              <Button onClick={this.createBudget} >
+                Create a budget
+              </Button>
+            </div>
+          </Grow>
+        </div>
       </div>
     );    
   }

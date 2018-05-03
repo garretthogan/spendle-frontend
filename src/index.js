@@ -19,7 +19,7 @@ const theme = createMuiTheme({
         paddingRight: 16,
         backgroundColor: 'white',
         top: '50%',
-        borderRadius: 10,
+        borderRadius: 100,
         '&:hover': {
           backgroundColor: 'white',
           boxShadow: '2px 2px 2px 2px rgba(0, 0, 0, 0.2)',

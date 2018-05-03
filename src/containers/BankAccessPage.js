@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import { bindActionCreators } from 'redux';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
-import Slide from 'material-ui/transitions/Slide';
+import Grow from 'material-ui/transitions/Grow';
+import Loading from '../components/Loading';
 import { getPublicKey, getAccessToken } from '../api/plaid';
 import { withStyles } from 'material-ui/styles';
 import {plaidEnv} from '../config';
@@ -89,25 +90,24 @@ class BankAccessPage extends Component {
     const { classes } = this.props;
     return (
       <div>
-        <Slide
+        <Loading loading={this.state.loading} />
+        <Grow
           timeout={{
-            enter: 1000,
+            enter: 1500,
             exit: 1000
           }}
-          direction="left"
           in={!this.state.loading && !this.state.fadeOut}
         >
           <div className={classes.welcomeText}>
             <Typography className={classes.welcomeHeader} variant="title">Welcome to Spendle</Typography>
             <Typography className={classes.welcomeBody} variant="subheading">Connect a bank account to begin!</Typography>
           </div>  
-        </Slide>
-        <Slide
+        </Grow>
+        <Grow
           timeout={{
-            enter: 1000,
+            enter: 1500,
             exit: 1000
           }}
-          direction="right"
           in={!this.state.loading && !this.state.fadeOut}
         >
           <div className={classes.buttonContainer}>
@@ -115,7 +115,7 @@ class BankAccessPage extends Component {
               Connect account
             </Button>
           </div>
-        </Slide>
+        </Grow>
       </div>
     );
   }
