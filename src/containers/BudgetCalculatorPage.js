@@ -95,8 +95,6 @@ const averageMonthlyExpenses = (transactions, numberOfMonths) => {
   return (mappedPayments.reduce((accumulator, currentValue) => accumulator + currentValue) / numberOfMonths).toFixed(2);
 }
 
-const filterRentSquareCash = transactions => transactions.filter(t => t.category === 'Square Cash' && t.amount > 800);
-
 const perMonth = (monthlyIncome, targetSavingsPercentage) => {
   return monthlyIncome - targetSavings(monthlyIncome, targetSavingsPercentage);
 }
@@ -113,7 +111,7 @@ const targetSavings = (monthlyIncome, targetSavingsPercentage) => {
   return monthlyIncome * (targetSavingsPercentage * 0.01);
 }
 
-const RANGE = 6;
+const RANGE = 12;
 
 /**
  * monthlyIncome * (targetSavingsPercentage * 0.01) / daysInMonth = dailyBudget
