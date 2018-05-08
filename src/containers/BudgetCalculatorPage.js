@@ -177,7 +177,7 @@ class BudgetCalculatorPage extends Component {
         </Grow>
         <Grow in={!saving && !saved && !loading} exit={saving} timeout={{enter: 1500, exit: 1000}}>
           <div className={classes.fieldContainer}>
-            <div className={classes.prompt}>Excluding bills and recurring expenses, how much money do you make per month?</div>
+            <div className={classes.prompt}>After bills and recurring expenses, how much money do you pocket each month?</div>
             <span className={classes.adornment}>$</span>
             <input type="number" value={monthlyIncome} onChange={this.handleInput('monthlyIncome')} className={classes.input}></input>
           </div>
