@@ -68,19 +68,13 @@ const isNotSquareCashExpense = transaction =>
 const filterTransactions = (key, value) => {
   return (transaction) => {
     if(Array.isArray(value) && Array.isArray(transaction[key])) {
-      return value.some(v => transaction[key].some(prop => {
-        return prop === v;
-      }));
+      return value.some(v => transaction[key].some(prop => prop === v));
     }
     else if(Array.isArray(value)) {
-      value.some(v => {
-        return v === transaction[key];
-      });
+      value.some(v => v === transaction[key]);
     }
     else if(Array.isArray(transaction[key])) {
-      return transaction[key].some(prop => {
-        return prop === value;
-      });
+      return transaction[key].some(prop => prop === value);
     }
 
     return transaction[key] === value;
