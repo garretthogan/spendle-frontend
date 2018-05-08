@@ -76,7 +76,6 @@ const filterTransactions = (key, value) => {
     else if(Array.isArray(transaction[key])) {
       return transaction[key].some(prop => prop === value);
     }
-
     return transaction[key] === value;
   }
 }
