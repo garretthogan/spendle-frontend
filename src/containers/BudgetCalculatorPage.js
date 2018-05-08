@@ -59,12 +59,16 @@ const styles = theme => ({
   }
 });
 
+// i pay my rent with square cash
+// i'm gonna figure out a better way to do this
+const isNotSquareCashExpense = transaction =>
+  !transaction.category.some(c => c === 'Square Cash') ||
+  (transaction.category.some(c => c === 'Square Cash') && transaction.amount > 800);
+
 const filterTransactions = (key, value) => {
   return (transaction) => {
     if(Array.isArray(value) && Array.isArray(transaction[key])) {
-      return value.some(v => transaction[key].some(prop => {
-        return prop === v;
-      }));
+      return value.some(v => transaction[key].some(prop => prop === v));
     }
     else if(Array.isArray(value)) {
       value.some(v => v === transaction[key]);
@@ -85,10 +89,13 @@ const averageMonthlyIncome = (transactions, numberOfMonths) => {
 }
 
 const averageMonthlyExpenses = (transactions, numberOfMonths) => {
-  const filteredByPayments = transactions.filter(filterTransactions('category', filterKeys));
+  const excludingSquareCashExpense = transactions.filter(isNotSquareCashExpense);
+  const filteredByPayments = excludingSquareCashExpense.filter(filterTransactions('category', filterKeys));
   const mappedPayments = filteredByPayments.map(payment => payment.amount);
   return (mappedPayments.reduce((accumulator, currentValue) => accumulator + currentValue) / numberOfMonths).toFixed(2);
 }
+
+const filterRentSquareCash = transactions => transactions.filter(t => t.category === 'Square Cash' && t.amount > 800);
 
 const perMonth = (monthlyIncome, targetSavingsPercentage) => {
   return monthlyIncome - targetSavings(monthlyIncome, targetSavingsPercentage);
@@ -128,7 +135,7 @@ class BudgetCalculatorPage extends Component {
       const monthlyExpenses = averageMonthlyExpenses(transactions, RANGE);
       this.setState({
         loading: false,
-        monthlyIncome: (averageMonthlyIncome(transactions, RANGE) * -1) - monthlyExpenses,
+        monthlyIncome: ((averageMonthlyIncome(transactions, RANGE) * -1) - monthlyExpenses).toFixed(2),
       });
       onTransactionsLoaded(transactions);
     });
@@ -165,12 +172,12 @@ class BudgetCalculatorPage extends Component {
           }}
         >
           <div className={classes.goalSaved}>
-            Goal saved!
+            Coming soon!
           </div>
         </Grow>
         <Grow in={!saving && !saved && !loading} exit={saving} timeout={{enter: 1500, exit: 1000}}>
           <div className={classes.fieldContainer}>
-            <div className={classes.prompt}>Excluding bills and recurring expenses, how much money do you make per month?</div>
+            <div className={classes.prompt}>After bills and recurring expenses, how much money do you pocket each month?</div>
             <span className={classes.adornment}>$</span>
             <input type="number" value={monthlyIncome} onChange={this.handleInput('monthlyIncome')} className={classes.input}></input>
           </div>
@@ -191,7 +198,7 @@ class BudgetCalculatorPage extends Component {
         </Grow>
         <Grow in={monthlyIncome > 0 && targetSavingsPercentage > 0 && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
           <div className={classes.buttonContainer}>
-            <Button onClick={this.saveGoal}>Save Goal</Button>
+            <Button onClick={this.saveGoal}>Update Me</Button>
           </div>
         </Grow>
       </div>
