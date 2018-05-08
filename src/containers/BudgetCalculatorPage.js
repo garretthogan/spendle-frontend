@@ -34,7 +34,7 @@ const styles = theme => ({
     borderBottom: '1px solid white',
     paddingTop: 16,
     paddingBottom: 4,
-    paddingLeft: 14,
+    paddingLeft: 12,
     fontSize: 18,
     '&:focus' : {
       outlineWidth: 0,
@@ -111,7 +111,7 @@ const targetSavings = (monthlyIncome, targetSavingsPercentage) => {
   return monthlyIncome * (targetSavingsPercentage * 0.01);
 }
 
-const RANGE = 12;
+const RANGE = 6;
 
 /**
  * monthlyIncome * (targetSavingsPercentage * 0.01) / daysInMonth = dailyBudget
