@@ -7,7 +7,7 @@ import Grow from 'material-ui/transitions/Grow';
 import Button from 'material-ui/Button';
 import Loading from '../components/Loading';
 import { getTransactionsInRange } from '../api/plaid';
-import { onTransactionsLoaded, TRANSACTIONS_LOADED } from '../actions';
+import { onTransactionsLoaded } from '../actions';
 
 const styles = theme => ({
   container : {
