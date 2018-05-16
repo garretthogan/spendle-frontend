@@ -46,7 +46,7 @@ const styles = theme => ({
   },
   buttonContainer: {
     textAlign: 'right',
-    paddingTop: 24,
+    paddingTop: 36,
     paddingRight: 12
   },
   goalSaved: {
@@ -175,7 +175,7 @@ class BudgetCalculatorPage extends Component {
         </Grow>
         <Grow in={!saving && !saved && !loading} exit={saving} timeout={{enter: 1500, exit: 1000}}>
           <div className={classes.fieldContainer}>
-            <div className={classes.prompt}>After bills and recurring expenses, how much money do you pocket each month?</div>
+            <div className={classes.prompt}>After bills and recurring expenses, it looks like you make about ${monthlyIncome} per month. Feel free to adjust that value below.</div>
             <span className={classes.adornment}>$</span>
             <input type="number" value={monthlyIncome} onChange={this.handleInput('monthlyIncome')} className={classes.input}></input>
           </div>
@@ -188,10 +188,12 @@ class BudgetCalculatorPage extends Component {
           </div>
         </Grow>
         <Grow in={monthlyIncome > 0 && targetSavingsPercentage > 0 && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
-          <div className={classes.prompt}>
-            To reach your goal of saving ${targetSavings(monthlyIncome, targetSavingsPercentage).toFixed(0)} you should only spend ${perMonth(monthlyIncome, targetSavingsPercentage).toFixed(0)} per month.
-            That's ${perWeek(monthlyIncome, targetSavingsPercentage).toFixed(0)} per week,
-            or ${perDay(monthlyIncome, targetSavingsPercentage, moment().daysInMonth()).toFixed(0)} per day.
+          <div className={classes.fieldContainer}>
+            <div className={classes.prompt}>
+              To reach your goal of saving ${targetSavings(monthlyIncome, targetSavingsPercentage).toFixed(0)} you should only spend ${perMonth(monthlyIncome, targetSavingsPercentage).toFixed(0)} per month.
+              That's ${perWeek(monthlyIncome, targetSavingsPercentage).toFixed(0)} per week,
+              or ${perDay(monthlyIncome, targetSavingsPercentage, moment().daysInMonth()).toFixed(0)} per day.
+            </div>
           </div>
         </Grow>
         <Grow in={monthlyIncome > 0 && targetSavingsPercentage > 0 && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
