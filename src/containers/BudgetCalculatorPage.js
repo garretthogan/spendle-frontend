@@ -6,61 +6,10 @@ import { withStyles } from 'material-ui/styles';
 import Grow from 'material-ui/transitions/Grow';
 import Button from 'material-ui/Button';
 import Loading from '../components/Loading';
+import InputField from '../components/InputField';
 import { getTransactionsInRange } from '../api/plaid';
 import { onTransactionsLoaded } from '../actions';
 
-const styles = theme => ({
-  container : {
-    position: 'absolute',
-    top: '20%',
-    left: '10%',
-    width: '80%',
-    color: 'white',
-  },
-  fieldContainer: {
-    paddingTop: 16,
-    paddingBottom: 16,
-  },
-  prompt: {
-    fontSize: 18
-  },
-  input: {
-    width: '90%',
-    color: 'white',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    borderTop: 0,
-    borderLeft: 0,
-    borderRight: 0,
-    borderBottom: '1px solid white',
-    paddingTop: 16,
-    paddingBottom: 4,
-    paddingLeft: 12,
-    fontSize: 18,
-    '&:focus' : {
-      outlineWidth: 0,
-    }
-  },
-  adornment: {
-    marginRight: -10,
-    display: 'inline-block',
-  },
-  buttonContainer: {
-    textAlign: 'right',
-    paddingTop: 36,
-    paddingRight: 12
-  },
-  goalSaved: {
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
-    top: '45%',
-    fontSize: 24,
-    textAlign: 'center'
-  }
-});
-
-// i pay my rent with square cash
-// i'm gonna figure out a better way to do this
 const isNotSquareCashExpense = transaction =>
   !transaction.category.some(c => c === 'Square Cash') ||
   (transaction.category.some(c => c === 'Square Cash') && transaction.amount > 800);
@@ -111,11 +60,38 @@ const targetSavings = (monthlyIncome, targetSavingsPercentage) => {
   return monthlyIncome * (targetSavingsPercentage * 0.01);
 }
 
+const styles = theme => ({
+  container : {
+    position: 'absolute',
+    top: '20%',
+    left: '10%',
+    width: '80%',
+    color: 'white',
+  },
+  promptContainer: {
+    paddingTop: 16,
+    paddingBottom: 16,
+  },
+  prompt: {
+    fontSize: 18
+  },
+  buttonContainer: {
+    textAlign: 'right',
+    paddingTop: 36,
+    paddingRight: 12
+  },
+  goalSaved: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    top: '45%',
+    fontSize: 24,
+    textAlign: 'center'
+  }
+});
+
 const RANGE = 6;
 
-/**
- * monthlyIncome * (targetSavingsPercentage * 0.01) / daysInMonth = dailyBudget
- */
 class BudgetCalculatorPage extends Component {
   constructor(props) {
     super(props);
@@ -149,10 +125,7 @@ class BudgetCalculatorPage extends Component {
     });
 
     setTimeout(() => {
-      this.setState({
-        saving: false,
-        saved: true,
-      });
+      this.props.history.push(`/update_settings/`);
     }, 2000)
   }
   render() {
@@ -173,22 +146,26 @@ class BudgetCalculatorPage extends Component {
             Coming soon!
           </div>
         </Grow>
-        <Grow in={!saving && !saved && !loading} exit={saving} timeout={{enter: 1500, exit: 1000}}>
-          <div className={classes.fieldContainer}>
-            <div className={classes.prompt}>After bills and recurring expenses, it looks like you make about ${monthlyIncome} per month. Feel free to adjust that value below.</div>
-            <span className={classes.adornment}>$</span>
-            <input type="number" value={monthlyIncome} onChange={this.handleInput('monthlyIncome')} className={classes.input}></input>
-          </div>
-        </Grow>
-        <Grow in={monthlyIncome > 0 && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
-          <div className={classes.fieldContainer}>
-            <div className={classes.prompt}>How much of that would you like to save?</div>
-            <span className={classes.adornment}>%</span>
-            <input type="number" value={targetSavingsPercentage} onChange={this.handleInput('targetSavingsPercentage')} className={classes.input}></input>
-          </div>
-        </Grow>
+        <InputField
+          enter={!saving && !saved && !loading}
+          exit={saving}
+          prompt={`After bills and recurring expenses, it looks like you make about $${monthlyIncome} per month. Feel free to adjust that value below.`}
+          adornment="$"
+          type="number"
+          value={monthlyIncome}
+          onChange={this.handleInput('monthlyIncome')}
+        />
+        <InputField
+          enter={monthlyIncome > 0 && !saving && !saved}
+          exit={saving}
+          prompt="How much of that would you like to save?"
+          adornment="%"
+          type="number"
+          value={targetSavingsPercentage}
+          onChange={this.handleInput('targetSavingsPercentage')}
+        />
         <Grow in={monthlyIncome > 0 && targetSavingsPercentage > 0 && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
-          <div className={classes.fieldContainer}>
+          <div className={classes.promptContainer}>
             <div className={classes.prompt}>
               To reach your goal of saving ${targetSavings(monthlyIncome, targetSavingsPercentage).toFixed(0)} you should only spend ${perMonth(monthlyIncome, targetSavingsPercentage).toFixed(0)} per month.
               That's ${perWeek(monthlyIncome, targetSavingsPercentage).toFixed(0)} per week,
@@ -198,7 +175,7 @@ class BudgetCalculatorPage extends Component {
         </Grow>
         <Grow in={monthlyIncome > 0 && targetSavingsPercentage > 0 && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
           <div className={classes.buttonContainer}>
-            <Button onClick={this.saveGoal}>Update Me</Button>
+            <Button onClick={this.saveGoal}>Schedule Updates</Button>
           </div>
         </Grow>
       </div>
