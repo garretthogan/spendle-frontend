@@ -30,6 +30,12 @@ export const createBudget = (amount, frequency = 'monthly') => fetchToJson(`${ba
   headers
 });
 
+export const saveBudget = (userData) => fetchToJson(`${baseUrl}/save_budget`, {
+  method: 'POST',
+  body: JSON.stringify(userData),
+  headers
+});
+
 const startOfMonth = monthsAgo => moment().subtract(monthsAgo, 'months').startOf('month');
 const endOfMonth = monthsAgo => moment().subtract(monthsAgo, 'months').endOf('month');
 
