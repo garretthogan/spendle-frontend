@@ -7,7 +7,7 @@ import Grow from 'material-ui/transitions/Grow';
 import Button from 'material-ui/Button';
 import Loading from '../components/Loading';
 import InputField from '../components/InputField';
-import { getTransactionsInRange, saveBudget } from '../api/plaid';
+import { getTransactionsInRange } from '../api/plaid';
 import {
   onTransactionsLoaded,
   setValue
@@ -121,14 +121,7 @@ class BudgetCalculatorPage extends Component {
     this.props.actions.setValue(prop, event.target.value);
   }
   saveGoal = () => {
-    const { incomeAfterBills, targetSavingsPercentage, phoneNumber, userId, spentThisMonth } = this.props;
-    saveBudget({incomeAfterBills, targetSavingsPercentage, phoneNumber, userId, spentThisMonth}).then(res => {
-      console.log('hit');
-      this.props.history.push(`/update_settings/`);
-    });
-    this.setState({
-      saving: true,
-    });
+    this.props.history.push(`/update_settings/`);
   }
   render() {
     const { classes, incomeAfterBills, targetSavingsPercentage } = this.props;

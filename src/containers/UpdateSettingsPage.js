@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import InputField from '../components/InputField';
 import Grow from 'material-ui/transitions/Grow';
 import Button from 'material-ui/Button';
 import { withStyles } from 'material-ui/styles';
+import { saveBudget } from '../api/plaid';
+import { setValue } from '../actions';
 
 const styles = theme => ({
   container : {
@@ -61,8 +65,7 @@ class UpdateSettingsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      emailAddress: '',
-      isEmailValid: false,
+      isPhoneNumberValid: props.phoneNumber > 0,
       updateFrequency: FREQS.DAILY,
       saving: false,
       loading: false,
@@ -70,53 +73,37 @@ class UpdateSettingsPage extends Component {
     }
   }
   handleInput = (event) => {
+    this.props.actions.setValue('phoneNumber', event.target.value);
     this.setState({
-      emailAddress: event.target.value,
-      isEmailValid: true,
+      isPhoneNumberValid: event.target.value > 0,
     });
   }
-  selectFrequency = (event) => {
-
-  }
   configureUpdates = () => {
+    const { userId, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth } = this.props;
     this.setState({
       saving: true,
     });
+    saveBudget({userId, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth}).then(res => {
+      this.setState({
+        saving: false,
+      });
+    });
   }
   render() {
-    const { classes } = this.props;
-    const { emailAddress, saving, loading, saved, isEmailValid } = this.state;
+    const { classes, phoneNumber } = this.props;
+    const { saving, loading, saved, isPhoneNumberValid } = this.state;
     return (
       <div className={classes.container}>
         <InputField
           enter={!saving && !saved && !loading}
           exit={saving}
-          prompt={`What's your email address? Spendle will only use this to send you updates on your progress as frequently as you would like.`}
-          type="email"
-          value={emailAddress}
+          adornment='+'
+          prompt={`What's your phone number? Spendle will only use this to send you updates on your progress as frequently as you would like.`}
+          type="number"
+          value={phoneNumber}
           onChange={this.handleInput}
         />
-        <Grow
-          in={!saving && !saved && !loading && isEmailValid}
-          exit={saving}
-          timeout={{ enter: 1500, exit: 1000 }}
-        >
-          <div className={classes.promptContainer}>
-            <div className={classes.prompt}>
-              Update Frequency
-            </div>
-            <select
-              className={classes.select}
-              value={this.state.updateFrequency}
-              onChange={this.selectFrequency}
-            >
-              <option value={FREQS.DAILY}>Daily</option>
-              <option value={FREQS.WEEKLY}>Weekly</option>
-            </select>
-            <span className={classes.underline}></span>
-          </div>
-        </Grow>
-        <Grow in={isEmailValid && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
+        <Grow in={isPhoneNumberValid && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
           <div className={classes.buttonContainer}>
             <Button onClick={this.configureUpdates}>Update Me</Button>
           </div>
@@ -126,4 +113,16 @@ class UpdateSettingsPage extends Component {
   }
 }
 
-export default withStyles(styles)(UpdateSettingsPage);
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({setValue}, dispatch)
+});
+
+const mapStateToProps = state => ({
+  userId: state.userId,
+  phoneNumber: state.phoneNumber,
+  targetSavingsPercentage: state.targetSavingsPercentage,
+  incomeAfterBills: state.incomeAfterBills,
+  spentThisMonth: state.spentThisMonth,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(UpdateSettingsPage));

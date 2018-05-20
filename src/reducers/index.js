@@ -9,7 +9,7 @@ const initialState = {
   accessToken: null,
   transactions: null,
   userId: 'abc123',
-  phoneNumber: 12253374350,
+  phoneNumber: 12345678,
   targetSavingsPercentage: 0,
   incomeAfterBills: 0,
   spentThisMonth: 0,
