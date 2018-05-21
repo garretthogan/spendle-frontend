@@ -1,14 +1,9 @@
-import {TRANSACTIONS_LOADED, ACCESS_TOKEN_LOADED, SET_LOADING, SET_VALUE} from '../actions';
-/**
- * To do:
- * - generate user id
- * - get phone number from user
- * - calculate spent this month
- */
+import {TRANSACTIONS_LOADED, ACCESS_TOKEN_LOADED, SET_LOADING, SET_VALUE } from '../actions';
+
 const initialState = {
   accessToken: null,
   transactions: null,
-  userId: 'abc123',
+  userId: '',
   phoneNumber: 12345678,
   targetSavingsPercentage: 0,
   incomeAfterBills: 0,
@@ -24,7 +19,7 @@ export default (state = initialState, action) => {
     case SET_LOADING:
       return Object.assign({}, state, {loading: action.payload});
     case SET_VALUE:
-      return Object.assign({}, state, {[action.payload.key]: action.payload.value})
+      return Object.assign({}, state, {[action.payload.key]: action.payload.value});
     default:
       return state;
   }

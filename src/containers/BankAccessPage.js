@@ -9,7 +9,8 @@ import { withStyles } from 'material-ui/styles';
 import {plaidEnv} from '../config';
 import {
   onAccessTokenLoaded,
-  onTransactionsLoaded
+  onTransactionsLoaded,
+  setValue
 } from '../actions';
 import { connect } from 'react-redux';
 
@@ -37,6 +38,19 @@ const styles = theme => ({
   }
 });
 
+const STATUS = {
+  NOT: 'not_authorized',
+  CONNECTED: 'connected',
+  UNKNOWN: 'unknown'
+};
+
+/**
+ * To do:
+ * if the user is logged in and has an existing account
+ *  - don't show the connect account CTA
+ *  - route to the budget calculator page
+ */
+
 class BankAccessPage extends Component {
   constructor(props) {
     super(props);
@@ -47,6 +61,16 @@ class BankAccessPage extends Component {
     };
   }
   componentDidMount() {
+    if(window.FB) {
+      window.FB.getLoginStatus(({status, authResponse}) => {
+        if(status === STATUS.NOT || status === STATUS.UNKNOWN) {
+          this.props.history.push(`/`);
+        }
+      });
+    }
+    this.initPlaidHandler();
+  }
+  initPlaidHandler = () => {
     getPublicKey().then(({public_key}) => {
       const handler = window.Plaid.create({
         apiVersion: 'v2',
@@ -56,7 +80,7 @@ class BankAccessPage extends Component {
         key: public_key,
         onSuccess: this.onSuccess,
         onExit: this.onExit,
-      });
+      });      
       this.setState({
         handler,
         loading: false,
@@ -76,7 +100,8 @@ class BankAccessPage extends Component {
     }
   }
   onSuccess = (token, metadata) => {
-    getAccessToken(token).then(({access_token}) => {
+    getAccessToken(token).then((res) => {
+      const { access_token } = res;
       this.props.history.push(`/goal/${access_token}`);
     });
   }
@@ -123,12 +148,14 @@ class BankAccessPage extends Component {
 
 const mapStateToProps = (state) => ({
   accessToken: state.accessToken,
+  userId: state.userId
 });
 
 const mapDispatchProps = (dispatch) => ({
   actions: bindActionCreators({
     onAccessTokenLoaded,
-    onTransactionsLoaded
+    onTransactionsLoaded,
+    setValue
   }, dispatch),
 });
 

@@ -10,6 +10,7 @@
     "moment": "^2.22.1",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
+    "react-facebook-login": "^4.0.1",
     "react-load-script": "^0.0.6",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
@@ -19,7 +20,7 @@
     "serve": "^6.5.6"
   },
   "scripts": {
-    "dev": "react-scripts start",
+    "dev": "HTTPS=true react-scripts start",
     "start": "yarn build && serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
