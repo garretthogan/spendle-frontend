@@ -18,7 +18,7 @@ class LoginPage extends Component {
 
   }
   onLoggedIn = (me) => {
-    this.props.actions.setValue('userId', me.userID);
+    this.props.actions.setValue('userId', me.userID);    
     this.props.history.push('/connect_bank/');
   }
   render() {
@@ -30,7 +30,7 @@ class LoginPage extends Component {
           appId="439630353141475"
           autoLoad={true}
           onClick={this.onClick}
-          callback={(me) => {this.onLoggedIn(me)}}
+          callback={(me) => { this.onLoggedIn(me) }}
         />
       </div>
     );

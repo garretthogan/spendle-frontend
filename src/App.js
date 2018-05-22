@@ -7,6 +7,12 @@ import LoginPage from './containers/LoginPage';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
 
+const STATUS = {
+  NOT: 'not_authorized',
+  CONNECTED: 'connected',
+  UNKNOWN: 'unknown'
+};
+
 const styles = theme => ({
   main: {
     width: '100%',
@@ -17,6 +23,15 @@ const styles = theme => ({
 });
 
 class App extends Component {
+  componentDidMount() {
+    if(window.FB) {
+      window.FB.getLoginStatus(({status, authResponse}) => {
+        if(status === STATUS.NOT || status === STATUS.UNKNOWN) {
+          this.props.history.push(`/`);
+        }
+      });
+    }
+  }
   render () {
     const { classes } = this.props;
 

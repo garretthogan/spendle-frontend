@@ -38,12 +38,6 @@ const styles = theme => ({
   }
 });
 
-const STATUS = {
-  NOT: 'not_authorized',
-  CONNECTED: 'connected',
-  UNKNOWN: 'unknown'
-};
-
 /**
  * To do:
  * if the user is logged in and has an existing account
@@ -61,13 +55,6 @@ class BankAccessPage extends Component {
     };
   }
   componentDidMount() {
-    if(window.FB) {
-      window.FB.getLoginStatus(({status, authResponse}) => {
-        if(status === STATUS.NOT || status === STATUS.UNKNOWN) {
-          this.props.history.push(`/`);
-        }
-      });
-    }
     this.initPlaidHandler();
   }
   initPlaidHandler = () => {
