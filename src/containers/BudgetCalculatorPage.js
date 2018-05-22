@@ -107,21 +107,27 @@ class BudgetCalculatorPage extends Component {
     };
   }
   componentDidMount() {
-    const { match: { params: { accessToken } }, actions: { onTransactionsLoaded, setValue } } = this.props;
-    getTransactionsInRange(accessToken, RANGE).then((transactions) => {
-      const monthlyExpenses = averageMonthlyExpenses(transactions, RANGE);
+    const { match: { params: { accessToken } }, actions: { onTransactionsLoaded, setValue }, incomeAfterBills } = this.props;
+    if (incomeAfterBills <= 0) {
+      getTransactionsInRange(accessToken, RANGE).then((transactions) => {
+        const monthlyExpenses = averageMonthlyExpenses(transactions, RANGE);
+        this.setState({
+          loading: false,
+        });
+        setValue('incomeAfterBills', ((averageMonthlyIncome(transactions, RANGE) * -1) - monthlyExpenses).toFixed(2))
+        onTransactionsLoaded(transactions);
+      });
+    } else {
       this.setState({
         loading: false,
-      });
-      setValue('incomeAfterBills', ((averageMonthlyIncome(transactions, RANGE) * -1) - monthlyExpenses).toFixed(2))
-      onTransactionsLoaded(transactions);
-    });
+      });      
+    }
   }
   handleInput = (prop) => (event) => {
     this.props.actions.setValue(prop, event.target.value);
   }
   saveGoal = () => {
-    this.props.history.push(`/update_settings/`);
+    this.props.history.push(`/update_settings/${this.props.match.params.accessToken}`);
   }
   render() {
     const { classes, incomeAfterBills, targetSavingsPercentage } = this.props;

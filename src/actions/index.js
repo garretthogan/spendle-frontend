@@ -2,6 +2,7 @@ export const TRANSACTIONS_LOADED = 'TRANSACTIONS_LOADED';
 export const ACCESS_TOKEN_LOADED = 'PUBLIC_KEY_LOADED';
 export const SET_LOADING = 'SET_LOADING';
 export const SET_VALUE = 'SET_VALUE';
+export const SET_USER = 'SET_USER';
 
 export const onTransactionsLoaded = (tranasctions) => ({
   type: TRANSACTIONS_LOADED,
@@ -21,4 +22,9 @@ export const setLoading = (loading) => ({
 export const setValue = (key, value) => ({
   type: SET_VALUE,
   payload: {key, value},
+});
+
+export const setUser = (user) => ({
+  type: SET_USER,
+  payload: {...user},
 });

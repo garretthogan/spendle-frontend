@@ -41,7 +41,7 @@ class App extends Component {
           <Route exact path="/" component={LoginPage} />
           <Route exact path="/connect_bank" component={BankAccessPage} />
           <Route exact path="/goal/:accessToken" component={BudgetCalculatorPage} />
-          <Route exact path="/update_settings" component={UpdateSettingsPage} />
+          <Route exact path="/update_settings/:accessToken" component={UpdateSettingsPage} />
         </div>
       </Router>
     );

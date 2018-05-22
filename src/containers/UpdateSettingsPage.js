@@ -79,11 +79,11 @@ class UpdateSettingsPage extends Component {
     });
   }
   configureUpdates = () => {
-    const { userId, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth } = this.props;
+    const { userId, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth, match: { params: { accessToken } } } = this.props;
     this.setState({
       saving: true,
     });
-    saveBudget({userId, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth}).then(res => {
+    saveBudget({userId, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth, accessToken}).then(res => {
       this.setState({
         saving: false,
       });
