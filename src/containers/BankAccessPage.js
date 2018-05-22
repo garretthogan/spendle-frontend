@@ -89,7 +89,6 @@ class BankAccessPage extends Component {
   onSuccess = (token, metadata) => {
     getAccessToken(token).then((res) => {
       const { access_token } = res;
-      console.log({ res });
       this.props.history.push(`/goal/${access_token}`);
     });
   }
