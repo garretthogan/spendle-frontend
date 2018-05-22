@@ -36,6 +36,9 @@ export const saveBudget = (userData) => fetchToJson(`${baseUrl}/save_budget`, {
   headers
 });
 
+export const getUser = (userId, accessToken) => fetchToJson(`${baseUrl}/user/${userId}?token=${accessToken}`)
+  .catch(console.log);
+
 const startOfMonth = monthsAgo => moment().subtract(monthsAgo, 'months').startOf('month');
 const endOfMonth = monthsAgo => moment().subtract(monthsAgo, 'months').endOf('month');
 

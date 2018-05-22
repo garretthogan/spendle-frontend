@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { setValue } from '../actions';
+import { setValue, setUser } from '../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from 'material-ui/styles';
 import FacebookLogin from 'react-facebook-login';
+import { getUser } from '../api/plaid';
 
 const styles = theme => ({
   container: {
@@ -18,8 +19,15 @@ class LoginPage extends Component {
 
   }
   onLoggedIn = (me) => {
-    this.props.actions.setValue('userId', me.userID);    
-    this.props.history.push('/connect_bank/');
+    this.props.actions.setValue('userId', me.userID);
+    getUser(me.userID, me.accessToken).then(user => {
+      if (user.userExists) {
+        this.props.actions.setUser(user);
+        this.props.history.push(`/goal/${user.spendleAccessToken}`);
+      } else {
+        this.props.history.push('/connect_bank/');
+      }
+    });
   }
   render() {
     const { classes } = this.props;
@@ -39,7 +47,7 @@ class LoginPage extends Component {
 
 const mapStateToProps = () => ({});
 const mapDistpatchToProp = dispatch => ({
-  actions: bindActionCreators({setValue}, dispatch)
+  actions: bindActionCreators({setValue, setUser}, dispatch)
 });
 
 export default connect(mapStateToProps, mapDistpatchToProp)(withStyles(styles)(LoginPage));
