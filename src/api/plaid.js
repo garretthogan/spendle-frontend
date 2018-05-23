@@ -9,7 +9,7 @@ const end = moment();
 
 const fetchToJson = (url, options) => fetch(url, options).then(res => res.json());
 
-export const getPublicKey = () => fetchToJson(`${baseUrl}/public_key`)
+export const getPublicKey = (fbAccessToken) => fetchToJson(`${baseUrl}/public_key?fbAccessToken=${fbAccessToken}`)
   .catch(console.log);
 
 export const getAccessToken = (publicKey) => fetchToJson(`${baseUrl}/get_access_token`, {

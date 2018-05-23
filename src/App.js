@@ -4,6 +4,7 @@ import BankAccessPage from './containers/BankAccessPage';
 import BudgetCalculatorPage from './containers/BudgetCalculatorPage';
 import UpdateSettingsPage from './containers/UpdateSettingsPage';
 import LoginPage from './containers/LoginPage';
+import BudgetSavedPage from './containers/BudgetSavedPage';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
 
@@ -40,6 +41,7 @@ class App extends Component {
         <div className={classes.main}>
           <Route exact path="/" component={LoginPage} />
           <Route exact path="/connect_bank" component={BankAccessPage} />
+          <Route exact path="/saved" component={BudgetSavedPage} />
           <Route exact path="/goal/:accessToken" component={BudgetCalculatorPage} />
           <Route exact path="/update_settings/:accessToken" component={UpdateSettingsPage} />
         </div>
