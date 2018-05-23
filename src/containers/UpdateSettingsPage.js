@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import InputField from '../components/InputField';
 import Grow from 'material-ui/transitions/Grow';
 import Button from 'material-ui/Button';
+import Loading from '../components/Loading';
 import { withStyles } from 'material-ui/styles';
 import { saveBudget } from '../api/plaid';
 import { setValue } from '../actions';
@@ -11,10 +12,15 @@ import { setValue } from '../actions';
 const styles = theme => ({
   container : {
     position: 'absolute',
-    top: '20%',
+    top: '0%',
     left: '10%',
     width: '80%',
+    height: '100%',
     color: 'white',
+  },
+  fieldContainer: {
+    position: 'absolute',
+    top: '25%',
   },
   promptContainer: {
     paddingTop: 16,
@@ -79,14 +85,14 @@ class UpdateSettingsPage extends Component {
     });
   }
   configureUpdates = () => {
-    const { userId, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth, match: { params: { accessToken } } } = this.props;
+    const { userId, fbAccessToken, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth, match: { params: { accessToken } } } = this.props;
     this.setState({
       saving: true,
     });
-    saveBudget({userId, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth, accessToken}).then(res => {
-      this.setState({
-        saving: false,
-      });
+    saveBudget({userId, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth, accessToken, token: fbAccessToken}).then(res => {
+      if (res.message === 'Budget saved!') {
+        this.props.history.push('/saved');
+      }
     });
   }
   render() {
@@ -94,20 +100,23 @@ class UpdateSettingsPage extends Component {
     const { saving, loading, saved, isPhoneNumberValid } = this.state;
     return (
       <div className={classes.container}>
-        <InputField
-          enter={!saving && !saved && !loading}
-          exit={saving}
-          adornment='+'
-          prompt={`What's your phone number? Spendle will only use this to send you updates on your progress as frequently as you would like.`}
-          type="number"
-          value={phoneNumber}
-          onChange={this.handleInput}
-        />
-        <Grow in={isPhoneNumberValid && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
-          <div className={classes.buttonContainer}>
-            <Button onClick={this.configureUpdates}>Update Me</Button>
-          </div>
-        </Grow>
+        <Loading loading={loading || saving} />
+        <div className={classes.fieldContainer}>
+          <InputField
+            enter={!saving && !saved && !loading}
+            exit={saving}
+            adornment='+'
+            prompt={`What's your phone number? Spendle will only use this to send you updates on your progress once a day.`}
+            type="number"
+            value={phoneNumber}
+            onChange={this.handleInput}
+          />
+          <Grow in={isPhoneNumberValid && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
+            <div className={classes.buttonContainer}>
+              <Button onClick={this.configureUpdates}>Update Me</Button>
+            </div>
+          </Grow>
+        </div>
       </div>
     );
   }
@@ -118,6 +127,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = state => ({
+  fbAccessToken: state.fbAccessToken,
   userId: state.userId,
   phoneNumber: state.phoneNumber,
   targetSavingsPercentage: state.targetSavingsPercentage,

@@ -8,9 +8,13 @@ import { getUser } from '../api/plaid';
 
 const styles = theme => ({
   container: {
+    height: '100%',
+  },
+  buttonContainer: {
     position: 'absolute',
-    top: '50%',
-    left: '25%',
+    top: '45%',
+    width: '100%',
+    textAlign: 'center',
   }
 });
 
@@ -22,9 +26,10 @@ class LoginPage extends Component {
     this.props.actions.setValue('userId', me.userID);
     getUser(me.userID, me.accessToken).then(user => {
       if (user.userExists) {
-        this.props.actions.setUser(user);
+        this.props.actions.setUser({...user, fbAccessToken: me.accessToken});
         this.props.history.push(`/goal/${user.spendleAccessToken}`);
       } else {
+        this.props.actions.setUser({fbAccessToken: me.accessToken});
         this.props.history.push('/connect_bank/');
       }
     });
@@ -34,12 +39,13 @@ class LoginPage extends Component {
 
     return(
       <div className={classes.container}>
-        <FacebookLogin
-          appId="439630353141475"
-          autoLoad={true}
-          onClick={this.onClick}
-          callback={(me) => { this.onLoggedIn(me) }}
-        />
+        <div className={classes.buttonContainer}>
+          <FacebookLogin
+            appId="439630353141475"
+            onClick={this.onClick}
+            callback={(me) => { this.onLoggedIn(me) }}
+          />
+        </div>
       </div>
     );
   }

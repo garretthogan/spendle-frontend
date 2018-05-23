@@ -38,13 +38,6 @@ const styles = theme => ({
   }
 });
 
-/**
- * To do:
- * if the user is logged in and has an existing account
- *  - don't show the connect account CTA
- *  - route to the budget calculator page
- */
-
 class BankAccessPage extends Component {
   constructor(props) {
     super(props);
@@ -58,7 +51,7 @@ class BankAccessPage extends Component {
     this.initPlaidHandler();
   }
   initPlaidHandler = () => {
-    getPublicKey().then(({public_key}) => {
+    getPublicKey(this.props.fbAccessToken).then(({public_key}) => {
       const handler = window.Plaid.create({
         apiVersion: 'v2',
         clientName: 'Spendle',
@@ -135,7 +128,8 @@ class BankAccessPage extends Component {
 
 const mapStateToProps = (state) => ({
   accessToken: state.accessToken,
-  userId: state.userId
+  userId: state.userId,
+  fbAccessToken: state.fbAccessToken,
 });
 
 const mapDispatchProps = (dispatch) => ({
