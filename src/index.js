@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {createStore} from 'redux';
+import { createStore } from 'redux';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
 import state from './reducers';
-import {Provider} from 'react-redux';
 
 const store = createStore(state);
 const theme = createMuiTheme({
@@ -22,16 +22,16 @@ const theme = createMuiTheme({
         '&:hover': {
           backgroundColor: 'white',
           boxShadow: '2px 2px 2px 2px rgba(0, 0, 0, 0.2)',
-        }
-      }
+        },
+      },
     },
     MuiFormLabel: {
       root: {
         color: 'white',
         '&:focus': {
-          color: 'white'
-        }
-      }
+          color: 'white',
+        },
+      },
     },
     MuiInput: {
       root: {
@@ -39,17 +39,21 @@ const theme = createMuiTheme({
         color: 'white',
         borderBottom: '0.5px solid white',
         '&:focus': {
-          color: 'white'
-        }
-      }
+          color: 'white',
+        },
+      },
     },
-  }
+  },
 });
 
-ReactDOM.render(
+const Root = () => (
   <MuiThemeProvider theme={theme}>
     <Provider store={store}>
-      <App />
+      <Router>
+        <App />
+      </Router>
     </Provider>
-  </MuiThemeProvider>, document.getElementById('root'));
-registerServiceWorker();
+  </MuiThemeProvider>
+);
+
+ReactDOM.render(Root(), document.getElementById('root'));
