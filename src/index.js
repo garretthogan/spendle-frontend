@@ -5,7 +5,6 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
 import state from './reducers';
 
 const store = createStore(state);
@@ -58,4 +57,3 @@ const Root = () => (
 );
 
 ReactDOM.render(Root(), document.getElementById('root'));
-// registerServiceWorker();
