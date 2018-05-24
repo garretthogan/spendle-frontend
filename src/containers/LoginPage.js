@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from 'material-ui/styles';
 import FacebookLogin from 'react-facebook-login';
-import { setUserId, setUser } from '../actions';
+import { setUserId, setUser, setUserAccessToken } from '../actions';
 import { getUser } from '../api/plaid';
 
 const styles = () => ({
@@ -26,10 +26,10 @@ class LoginPage extends Component {
     this.props.actions.setUserId(me.userID);
     getUser(me.userID, me.accessToken).then((user) => {
       if (user.userExists) {
-        this.props.actions.setUser({ ...user, fbAccessToken: me.accessToken });
-        this.props.history.push(`/goal/${user.spendleAccessToken}`);
+        this.props.actions.setUser({ ...user, userAccessToken: me.accessToken });
+        this.props.history.push('/goal/');
       } else {
-        this.props.actions.setUser({ fbAccessToken: me.accessToken });
+        this.props.actions.setUserAccessToken(me.accessToken);
         this.props.history.push('/connect_bank/');
       }
     });
@@ -53,7 +53,7 @@ class LoginPage extends Component {
 
 const mapStateToProps = () => ({});
 const mapDistpatchToProp = dispatch => ({
-  actions: bindActionCreators({ setUserId, setUser }, dispatch),
+  actions: bindActionCreators({ setUserId, setUser, setUserAccessToken }, dispatch),
 });
 
 export default connect(mapStateToProps, mapDistpatchToProp)(withStyles(styles)(LoginPage));
