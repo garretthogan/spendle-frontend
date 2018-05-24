@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import InputField from '../components/InputField';
+import { withStyles } from 'material-ui/styles';
 import Grow from 'material-ui/transitions/Grow';
 import Button from 'material-ui/Button';
+import InputField from '../components/InputField';
 import Loading from '../components/Loading';
-import { withStyles } from 'material-ui/styles';
 import { saveBudget } from '../api/plaid';
-import { setValue } from '../actions';
+import { setPhoneNumber } from '../actions';
 
-const styles = theme => ({
-  container : {
+const styles = () => ({
+  container: {
     position: 'absolute',
     top: '0%',
     left: '10%',
@@ -29,12 +29,12 @@ const styles = theme => ({
   prompt: {
     paddingTop: 12,
     paddingBottom: 6,
-    fontSize: 18
+    fontSize: 18,
   },
   buttonContainer: {
     textAlign: 'right',
     paddingTop: 24,
-    paddingRight: 12
+    paddingRight: 12,
   },
   actionComplete: {
     position: 'absolute',
@@ -42,7 +42,7 @@ const styles = theme => ({
     width: '100%',
     top: '45%',
     fontSize: 24,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   select: {
     width: '90%',
@@ -53,7 +53,7 @@ const styles = theme => ({
     outlineWidth: 0,
     '&;focus': {
       outlineWidth: 0,
-    }
+    },
   },
   underline: {
     width: '95%',
@@ -62,34 +62,49 @@ const styles = theme => ({
     left: '0%',
     top: '85%',
     borderBottom: '1px solid white',
-  }  
+  },
 });
-
-const FREQS = { DAILY: 1, WEEKLY: 2 };
 
 class UpdateSettingsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isPhoneNumberValid: props.phoneNumber > 0,
-      updateFrequency: FREQS.DAILY,
       saving: false,
       loading: false,
       saved: false,
-    }
+    };
   }
   handleInput = (event) => {
-    this.props.actions.setValue('phoneNumber', event.target.value);
+    this.props.actions.setPhoneNumber(event.target.value);
     this.setState({
       isPhoneNumberValid: event.target.value > 0,
     });
   }
   configureUpdates = () => {
-    const { userId, fbAccessToken, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth, match: { params: { accessToken } } } = this.props;
+    const {
+      userId,
+      userAccessToken,
+      plaidAccessToken,
+      incomeAfterBills,
+      targetSavingsPercentage,
+      phoneNumber,
+      spentThisMonth,
+    } = this.props;
+
     this.setState({
       saving: true,
     });
-    saveBudget({userId, incomeAfterBills, targetSavingsPercentage, phoneNumber, spentThisMonth, accessToken, token: fbAccessToken}).then(res => {
+
+    saveBudget({
+      userId,
+      incomeAfterBills,
+      targetSavingsPercentage,
+      phoneNumber,
+      spentThisMonth,
+      accessToken: plaidAccessToken,
+      token: userAccessToken,
+    }).then((res) => {
       if (res.message === 'Budget saved!') {
         this.props.history.push('/saved');
       }
@@ -97,7 +112,12 @@ class UpdateSettingsPage extends Component {
   }
   render() {
     const { classes, phoneNumber } = this.props;
-    const { saving, loading, saved, isPhoneNumberValid } = this.state;
+    const {
+      saving,
+      loading,
+      saved,
+      isPhoneNumberValid,
+    } = this.state;
     return (
       <div className={classes.container}>
         <Loading loading={loading || saving} />
@@ -123,11 +143,12 @@ class UpdateSettingsPage extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators({setValue}, dispatch)
+  actions: bindActionCreators({setPhoneNumber}, dispatch)
 });
 
 const mapStateToProps = state => ({
-  fbAccessToken: state.fbAccessToken,
+  userAccessToken: state.userAccessToken,
+  plaidAccessToken: state.plaidAccessToken,
   userId: state.userId,
   phoneNumber: state.phoneNumber,
   targetSavingsPercentage: state.targetSavingsPercentage,

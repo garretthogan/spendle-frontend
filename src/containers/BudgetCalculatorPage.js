@@ -7,64 +7,24 @@ import Grow from 'material-ui/transitions/Grow';
 import Button from 'material-ui/Button';
 import Loading from '../components/Loading';
 import InputField from '../components/InputField';
-import { getTransactionsInRange } from '../api/plaid';
 import {
-  onTransactionsLoaded,
-  setValue
+  setValue,
 } from '../actions';
 
-const isNotSquareCashExpense = transaction =>
-  !transaction.category.some(c => c === 'Square Cash') ||
-  (transaction.category.some(c => c === 'Square Cash') && transaction.amount > 800);
+const targetSavings = (monthlyIncome, targetSavingsPercentage) =>
+  monthlyIncome * (targetSavingsPercentage * 0.01);
 
-const filterTransactions = (key, value) => {
-  return (transaction) => {
-    if(Array.isArray(value) && Array.isArray(transaction[key])) {
-      return value.some(v => transaction[key].some(prop => prop === v));
-    }
-    else if(Array.isArray(value)) {
-      value.some(v => v === transaction[key]);
-    }
-    else if(Array.isArray(transaction[key])) {
-      return transaction[key].some(prop => prop === value);
-    }
-    return transaction[key] === value;
-  }
-}
+const perMonth = (monthlyIncome, targetSavingsPercentage) =>
+  monthlyIncome - targetSavings(monthlyIncome, targetSavingsPercentage);
 
-const filterKeys = ['Payment', 'Utilities', 'Subscription', 'Rent', 'Square Cash', 'Student Aid and Grants', 'Loans and Mortgages'];
+const perWeek = (monthlyIncome, targetSavingsPercentage) =>
+  perMonth(monthlyIncome, targetSavingsPercentage) / 4;
 
-const averageMonthlyIncome = (transactions, numberOfMonths) => {
-  const filteredByPayroll = transactions.filter(filterTransactions('category', 'Deposit'));
-  const mappedPayments = filteredByPayroll.map(payment => payment.amount);
-  return (mappedPayments.reduce((accumulator, currentValue) => accumulator + currentValue) / numberOfMonths).toFixed(2);  
-}
+const perDay = (monthlyIncome, targetSavingsPercentage, daysInMonth) =>
+  perMonth(monthlyIncome, targetSavingsPercentage) / daysInMonth;
 
-const averageMonthlyExpenses = (transactions, numberOfMonths) => {
-  const excludingSquareCashExpense = transactions.filter(isNotSquareCashExpense);
-  const filteredByPayments = excludingSquareCashExpense.filter(filterTransactions('category', filterKeys));
-  const mappedPayments = filteredByPayments.map(payment => payment.amount);
-  return (mappedPayments.reduce((accumulator, currentValue) => accumulator + currentValue) / numberOfMonths).toFixed(2);
-}
-
-const perMonth = (monthlyIncome, targetSavingsPercentage) => {
-  return monthlyIncome - targetSavings(monthlyIncome, targetSavingsPercentage);
-}
-
-const perWeek = (monthlyIncome, targetSavingsPercentage) => {
-  return perMonth(monthlyIncome, targetSavingsPercentage) / 4;
-}
-
-const perDay = (monthlyIncome, targetSavingsPercentage, daysInMonth) => {
-  return perMonth(monthlyIncome, targetSavingsPercentage) / daysInMonth;
-}
-
-const targetSavings = (monthlyIncome, targetSavingsPercentage) => {
-  return monthlyIncome * (targetSavingsPercentage * 0.01);
-}
-
-const styles = theme => ({
-  container : {
+const styles = () => ({
+  container: {
     position: 'absolute',
     top: '20%',
     left: '10%',
@@ -76,12 +36,12 @@ const styles = theme => ({
     paddingBottom: 16,
   },
   prompt: {
-    fontSize: 18
+    fontSize: 18,
   },
   buttonContainer: {
     textAlign: 'right',
     paddingTop: 36,
-    paddingRight: 12
+    paddingRight: 12,
   },
   goalSaved: {
     position: 'absolute',
@@ -89,58 +49,35 @@ const styles = theme => ({
     width: '100%',
     top: '45%',
     fontSize: 24,
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
-
-const RANGE = 6;
 
 class BudgetCalculatorPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      monthlyIncome: 0,
-      targetSavingsPercentage: 0,
-      loading: true,
       saving: false,
       saved: false,
     };
   }
-  componentDidMount() {
-    const { match: { params: { accessToken } }, actions: { onTransactionsLoaded, setValue }, incomeAfterBills } = this.props;
-    if (incomeAfterBills <= 0) {
-      getTransactionsInRange(accessToken, RANGE).then((transactions) => {
-        const monthlyExpenses = averageMonthlyExpenses(transactions, RANGE);
-        this.setState({
-          loading: false,
-        });
-        setValue('incomeAfterBills', ((averageMonthlyIncome(transactions, RANGE) * -1) - monthlyExpenses).toFixed(2))
-        onTransactionsLoaded(transactions);
-      });
-    } else {
-      this.setState({
-        loading: false,
-      });      
-    }
-  }
-  handleInput = (prop) => (event) => {
+  handleInput = prop => (event) => {
     this.props.actions.setValue(prop, event.target.value);
   }
   saveGoal = () => {
-    this.props.history.push(`/update_settings/${this.props.match.params.accessToken}`);
+    this.props.history.push('/update_settings/');
   }
   render() {
     const { classes, incomeAfterBills, targetSavingsPercentage } = this.props;
-    const { saving, saved, loading } = this.state;
-
+    const { saving, saved } = this.state;
     return (
       <div className={classes.container}>
-        <Loading loading={saving || loading} />
+        <Loading loading={saving} />
         <Grow
           in={saved}
           timeout={{
             enter: 1500,
-            exit: 1500
+            exit: 1500,
           }}
         >
           <div className={classes.goalSaved}>
@@ -148,7 +85,7 @@ class BudgetCalculatorPage extends Component {
           </div>
         </Grow>
         <InputField
-          enter={!saving && !saved && !loading}
+          enter={!saving && !saved}
           exit={saving}
           prompt={`After bills and recurring expenses, it looks like you make about $${incomeAfterBills} per month. Feel free to adjust that value below.`}
           adornment="$"
@@ -165,16 +102,29 @@ class BudgetCalculatorPage extends Component {
           value={targetSavingsPercentage}
           onChange={this.handleInput('targetSavingsPercentage')}
         />
-        <Grow in={incomeAfterBills > 0 && targetSavingsPercentage > 0 && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
+        <Grow
+          in={incomeAfterBills > 0 && targetSavingsPercentage > 0 && !saving && !saved}
+          exit={saving}
+          timeout={{ enter: 1500, exit: 1000 }}
+        >
           <div className={classes.promptContainer}>
             <div className={classes.prompt}>
-              To reach your goal of saving ${targetSavings(incomeAfterBills, targetSavingsPercentage).toFixed(0)} you should only spend ${perMonth(incomeAfterBills, targetSavingsPercentage).toFixed(0)} per month.
+              To reach your goal of saving
+              ${targetSavings(incomeAfterBills, targetSavingsPercentage).toFixed(0)} you
+              should only spend
+              ${perMonth(incomeAfterBills, targetSavingsPercentage).toFixed(0)} per month.
               That's ${perWeek(incomeAfterBills, targetSavingsPercentage).toFixed(0)} per week,
-              or ${perDay(incomeAfterBills, targetSavingsPercentage, moment().daysInMonth()).toFixed(0)} per day.
+              or ${
+                perDay(incomeAfterBills, targetSavingsPercentage, moment().daysInMonth()).toFixed(0)
+              } per day.
             </div>
           </div>
         </Grow>
-        <Grow in={incomeAfterBills > 0 && targetSavingsPercentage > 0 && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
+        <Grow
+          in={incomeAfterBills > 0 && targetSavingsPercentage > 0 && !saving && !saved}
+          exit={saving}
+          timeout={{ enter: 1500, exit: 1000 }}
+        >
           <div className={classes.buttonContainer}>
             <Button onClick={this.saveGoal}>Save Goal</Button>
           </div>
@@ -185,16 +135,19 @@ class BudgetCalculatorPage extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators({onTransactionsLoaded, setValue}, dispatch)
+  actions: bindActionCreators({ setValue }, dispatch),
 });
 
 const mapStateToProps = state => ({
+  plaidAccessToken: state.plaidAccessToken,
   transactions: state.transactions,
   incomeAfterBills: state.incomeAfterBills,
   targetSavingsPercentage: state.targetSavingsPercentage,
   phoneNumber: state.phoneNumber,
   userId: state.userId,
-  spentThisMonth: state.spentThisMonth
+  spentThisMonth: state.spentThisMonth,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(BudgetCalculatorPage));
+const styled = withStyles(styles)(BudgetCalculatorPage);
+
+export default connect(mapStateToProps, mapDispatchToProps)(styled);
