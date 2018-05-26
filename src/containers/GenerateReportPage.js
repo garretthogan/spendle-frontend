@@ -33,9 +33,9 @@ const getUpdateText = (amount, budget, goal) => {
   const dailyBudget = diff / daysRemaining;
   return diff < 0 ?
     ` That's $${diff.toFixed(0) * -1} over your budget!
-     Try to limit yourself to about $15 per day.` :
+     Try to limit yourself to about $15  today.` :
     ` You have about $${(diff).toFixed(0)} remaining in your budget for the month
-     You should only spend $${dailyBudget} if you still want to reach your goal of saving $${goal}.`;
+     You should only spend $${dailyBudget} today if you still want to reach your goal of saving $${goal}.`;
 };
 
 const recurringTransactionKeys = [
