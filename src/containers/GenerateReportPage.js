@@ -14,19 +14,29 @@ const styles = () => ({
     textAlign: 'center',
   },
   buttonContainer: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
+    paddingTop: 12,
   },
   reportContainer: {
     position: 'absolute',
     textAlign: 'center',
-    top: '50%',
-    width: '100%',
+    top: '40%',
+    left: '10%',
+    width: '80%',
     fontSize: 18,
     color: 'white',
   },
 });
+
+const getUpdateText = (amount, budget, goal) => {
+  const diff = budget - amount;
+  const daysRemaining = moment().endOf('month').diff(moment(), 'days');
+  const dailyBudget = diff / daysRemaining;
+  return diff < 0 ?
+    ` That's $${diff.toFixed(0) * -1} over your budget!
+     Try to limit yourself to about $15 per day.` :
+    ` You have about $${(diff).toFixed(0)} remaining in your budget for the month
+     You should only spend $${dailyBudget} if you still want to reach your goal of saving $${goal}.`;
+};
 
 const recurringTransactionKeys = [
   'Payment',
@@ -38,6 +48,7 @@ const recurringTransactionKeys = [
   'Loans and Mortgages',
   'Internal Account Transfer',
   'Transfer',
+  'Deposit',
   'Telecommunication Services',
   'Education',
   'Bank Fees',
@@ -48,8 +59,20 @@ class GenerateReportPage extends Component {
     super(props);
     this.state = {
       loading: false,
+      budget: 0,
       amountSpent: 0,
+      targetSavings: 0,
     };
+  }
+  componentDidMount() {
+    if (this.props.plaidAccessToken) {
+      this.generateReport();
+    } else {
+      this.props.history.push('/');
+    }
+  }
+  configureBudget = () => {
+    this.props.history.push('/goal');
   }
   generateReport = () => {
     const { incomeAfterBills, targetSavingsPercentage, plaidAccessToken } = this.props;
@@ -69,40 +92,28 @@ class GenerateReportPage extends Component {
 
       const amountSpent = (filteredTransactions.map(t =>
         t.amount).reduce((total, current) => total + current)).toFixed(0);
-
+      const targetSavings = (incomeAfterBills * (targetSavingsPercentage * 0.01)).toFixed(2);
+      const budget = incomeAfterBills - targetSavings;
       this.setState({
+        targetSavings,
+        budget,
         amountSpent,
         loading: false,
       });
-
-      console.log({ amountSpent, incomeAfterBills, targetSavingsPercentage });
     });
-    // get transactions in the last month
-    // filter out recurring ones
-    // show how much we have spent this month
-    // show how much of our budget is remaining
-    // show how much of that we can spend each day
   }
   render() {
     const { classes } = this.props;
-    const { amountSpent, loading } = this.state;
+    const {
+      amountSpent,
+      loading,
+      budget,
+      targetSavings,
+    } = this.state;
+
     return (
       <div className={classes.container}>
-        <Loading loading={this.state.loading} />
-        <Grow
-          in={!loading && amountSpent === 0}
-          exit={loading}
-          timeout={{
-            enter: 1500,
-            exit: 1000,
-          }}
-        >
-          <Button
-            onClick={this.generateReport}
-          >
-            Show Progress
-          </Button>
-        </Grow>
+        <Loading loading={loading} />
         <Grow
           in={!loading && amountSpent > 0}
           timeout={{
@@ -111,7 +122,17 @@ class GenerateReportPage extends Component {
           }}
         >
           <div className={classes.reportContainer}>
-            Looks like you've spent about ${amountSpent} this month.
+            <div>
+              Looks like you've spent about ${amountSpent} this month.
+              {getUpdateText(amountSpent, budget, targetSavings)}
+            </div>
+            <div className={classes.buttonContainer}>
+              <Button
+                onClick={this.configureBudget}
+              >
+                Configure Budget
+              </Button>
+            </div>
           </div>
         </Grow>
       </div>

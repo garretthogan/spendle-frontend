@@ -64,8 +64,8 @@ class BudgetCalculatorPage extends Component {
   handleInput = prop => (event) => {
     this.props.actions.setValue(prop, event.target.value);
   }
-  saveGoal = () => {
-    this.props.history.push('/update_settings/');
+  configureUpdates = () => {
+    this.props.history.push('/generate_report/');
   }
   render() {
     const { classes, incomeAfterBills, targetSavingsPercentage } = this.props;
@@ -126,7 +126,7 @@ class BudgetCalculatorPage extends Component {
           timeout={{ enter: 1500, exit: 1000 }}
         >
           <div className={classes.buttonContainer}>
-            <Button onClick={this.saveGoal}>Save Goal</Button>
+            <Button onClick={this.configureUpdates}>Update Me</Button>
           </div>
         </Grow>
       </div>

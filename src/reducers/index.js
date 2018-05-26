@@ -12,7 +12,7 @@ const initialState = {
   userAccessToken: null,
   plaidAccessToken: null,
   userId: '',
-  phoneNumber: 111234567891,
+  phoneNumber: 11234567891,
   targetSavingsPercentage: 0,
   incomeAfterBills: 0,
   spentThisMonth: 0,

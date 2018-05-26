@@ -136,7 +136,7 @@ class UpdateSettingsPage extends Component {
             timeout={{ enter: 1500, exit: 1000 }}
           >
             <div className={classes.buttonContainer}>
-              <Button onClick={this.configureUpdates}>Update Me</Button>
+              <Button onClick={this.configureUpdates}>Show Progress</Button>
             </div>
           </Grow>
         </div>

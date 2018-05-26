@@ -39,7 +39,15 @@ const styles = () => ({
 
 const RANGE = 6;
 
-const recurringTransactionKeys = ['Payment', 'Utilities', 'Subscription', 'Rent', 'Square Cash', 'Student Aid and Grants', 'Loans and Mortgages'];
+const recurringTransactionKeys = [
+  'Payment',
+  'Utilities',
+  'Subscription',
+  'Rent',
+  'Square Cash',
+  'Student Aid and Grants',
+  'Loans and Mortgages',
+];
 
 const isNotSquareCashExpense = transaction =>
   !transaction.category.some(c => c === 'Square Cash') ||
