@@ -2,13 +2,13 @@ import React from 'react';
 import Grow from 'material-ui/transitions/Grow';
 import { withStyles } from 'material-ui/styles';
 
-const styles = theme => ({
+const styles = () => ({
   fieldContainer: {
     paddingTop: 16,
     paddingBottom: 16,
   },
   prompt: {
-    fontSize: 18
+    fontSize: 18,
   },
   input: {
     width: '90%',
@@ -22,9 +22,9 @@ const styles = theme => ({
     paddingBottom: 4,
     paddingLeft: 12,
     fontSize: 18,
-    '&:focus' : {
+    '&:focus': {
       outlineWidth: 0,
-    }
+    },
   },
   adornment: {
     marginRight: -10,
@@ -32,12 +32,26 @@ const styles = theme => ({
   },
 });
 
-const InputField = ({classes, enter, exit, timeout, prompt, adornment, value, onChange, type}) => (
-  <Grow in={enter} exit={exit} timeout={{enter: 1500, exit: 1000}}>
+const InputField = ({
+  classes,
+  enter,
+  exit,
+  prompt,
+  adornment,
+  value,
+  onChange,
+  type,
+}) => (
+  <Grow in={enter} exit={exit} timeout={{ enter: 1500, exit: 1000 }}>
     <div className={classes.fieldContainer}>
       <div className={classes.prompt}>{prompt}</div>
       {adornment && <span className={classes.adornment}>{adornment}</span>}
-      <input type={type} value={value} onChange={onChange} className={classes.input}></input>
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        className={classes.input}
+      />
     </div>
   </Grow>
 );

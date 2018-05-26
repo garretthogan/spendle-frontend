@@ -39,7 +39,7 @@ const styles = () => ({
 
 const RANGE = 6;
 
-const filterKeys = ['Payment', 'Utilities', 'Subscription', 'Rent', 'Square Cash', 'Student Aid and Grants', 'Loans and Mortgages'];
+const recurringTransactionKeys = ['Payment', 'Utilities', 'Subscription', 'Rent', 'Square Cash', 'Student Aid and Grants', 'Loans and Mortgages'];
 
 const isNotSquareCashExpense = transaction =>
   !transaction.category.some(c => c === 'Square Cash') ||
@@ -58,7 +58,7 @@ const filterTransactions = (key, value) => (transaction) => {
 
 const averageMonthlyExpenses = (transactions, numberOfMonths) => {
   const excludingSquareCashExpense = transactions.filter(isNotSquareCashExpense);
-  const filteredByPayments = excludingSquareCashExpense.filter(filterTransactions('category', filterKeys));
+  const filteredByPayments = excludingSquareCashExpense.filter(filterTransactions('category', recurringTransactionKeys));
   const mappedPayments = filteredByPayments.map(payment => payment.amount);
   return (mappedPayments.reduce((accumulator, currentValue) =>
     accumulator + currentValue) / numberOfMonths).toFixed(2);

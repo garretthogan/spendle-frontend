@@ -11,6 +11,7 @@ import BudgetCalculatorPage from './containers/BudgetCalculatorPage';
 import UpdateSettingsPage from './containers/UpdateSettingsPage';
 import LoginPage from './containers/LoginPage';
 import BudgetSavedPage from './containers/BudgetSavedPage';
+import GenerateReportPage from './containers/GenerateReportPage';
 import './App.css';
 
 const STATUS = {
@@ -45,7 +46,7 @@ class App extends Component {
           if (user.userExists) {
             this.props.actions.setPlaidAccessToken(user.plaidAccessToken);
             this.props.actions.setUser(user);
-            this.props.history.push('/goal/');
+            this.props.history.push('/generate_report/');
           } else {
             this.props.actions.setUserId(authResponse.userID);
             this.props.history.push('/connect_bank/');
@@ -64,6 +65,7 @@ class App extends Component {
         <Route exact path="/saved" component={BudgetSavedPage} />
         <Route exact path="/goal/" component={BudgetCalculatorPage} />
         <Route exact path="/update_settings/" component={UpdateSettingsPage} />
+        <Route exact path="/generate_report/" component={GenerateReportPage} />
       </div>
     );
   }
