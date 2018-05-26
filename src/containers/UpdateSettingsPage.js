@@ -95,7 +95,6 @@ class UpdateSettingsPage extends Component {
     this.setState({
       saving: true,
     });
-
     saveBudget({
       userId,
       incomeAfterBills,
@@ -106,7 +105,7 @@ class UpdateSettingsPage extends Component {
       token: userAccessToken,
     }).then((res) => {
       if (res.message === 'Budget saved!') {
-        this.props.history.push('/saved');
+        this.props.history.push('/generate_report');
       }
     });
   }
@@ -125,15 +124,19 @@ class UpdateSettingsPage extends Component {
           <InputField
             enter={!saving && !saved && !loading}
             exit={saving}
-            adornment='+'
-            prompt={`What's your phone number? Spendle will only use this to send you updates on your progress once a day.`}
+            adornment="+"
+            prompt="What's your phone number? Spendle will only use this to send you updates on your progress once a day."
             type="number"
             value={phoneNumber}
             onChange={this.handleInput}
           />
-          <Grow in={isPhoneNumberValid && !saving && !saved} exit={saving} timeout={{enter: 1500, exit: 1000}}>
+          <Grow
+            in={isPhoneNumberValid && !saving && !saved}
+            exit={saving}
+            timeout={{ enter: 1500, exit: 1000 }}
+          >
             <div className={classes.buttonContainer}>
-              <Button onClick={this.configureUpdates}>Update Me</Button>
+              <Button onClick={this.configureUpdates}>Show Progress</Button>
             </div>
           </Grow>
         </div>
@@ -143,7 +146,7 @@ class UpdateSettingsPage extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators({setPhoneNumber}, dispatch)
+  actions: bindActionCreators({ setPhoneNumber }, dispatch),
 });
 
 const mapStateToProps = state => ({
