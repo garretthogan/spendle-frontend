@@ -65,7 +65,7 @@ class BudgetCalculatorPage extends Component {
     this.props.actions.setValue(prop, event.target.value);
   }
   configureUpdates = () => {
-    this.props.history.push('/generate_report/');
+    this.props.history.push('/update_settings/');
   }
   render() {
     const { classes, incomeAfterBills, targetSavingsPercentage } = this.props;
