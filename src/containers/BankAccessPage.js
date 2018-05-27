@@ -97,6 +97,7 @@ class BankAccessPage extends Component {
     getAccessToken(token).then(({ access_token }) => {
       this.props.actions.setPlaidAccessToken(access_token);
       getTransactionsInRange(access_token, RANGE).then((transactions) => {
+        console.log({ transactions });
         if (transactions.length > 0) {
           const monthlyExpenses = averageMonthlyExpenses(transactions, RANGE);
           const monthlyIncomeInverted = averageMonthlyIncome(transactions, RANGE) * -1;
