@@ -50,7 +50,9 @@ const recurringTransactionKeys = [
 ];
 
 const isNotSquareCashExpense = transaction =>
-  transaction.category.length === 0 || (!transaction.category.some(c => c === 'Square Cash') ||
+  !transaction.category ||
+  (transaction.category && transaction.category.length === 0) ||
+  (!transaction.category.some(c => c === 'Square Cash') ||
   (transaction.category.some(c => c === 'Square Cash') && transaction.amount > 800));
 
 const filterTransactions = (key, value) => (transaction) => {
