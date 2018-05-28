@@ -12,6 +12,7 @@ import UpdateSettingsPage from './containers/UpdateSettingsPage';
 import LoginPage from './containers/LoginPage';
 import BudgetSavedPage from './containers/BudgetSavedPage';
 import GenerateReportPage from './containers/GenerateReportPage';
+import TopExpensesPage from './containers/TopExpensesPage';
 import './App.css';
 
 const STATUS = {
@@ -66,6 +67,7 @@ class App extends Component {
         <Route exact path="/goal/" component={BudgetCalculatorPage} />
         <Route exact path="/update_settings/" component={UpdateSettingsPage} />
         <Route exact path="/generate_report/" component={GenerateReportPage} />
+        <Route exact path="/top_expenses/" component={TopExpensesPage} />
       </div>
     );
   }

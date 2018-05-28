@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Button from 'material-ui/Button';
@@ -6,6 +7,7 @@ import { withStyles } from 'material-ui/styles';
 import Grow from 'material-ui/transitions/Grow';
 import Loading from '../components/Loading';
 import { getTransactions } from '../api/plaid';
+import { setTopTransactions } from '../actions';
 
 const styles = () => ({
   container: {
@@ -71,8 +73,11 @@ class GenerateReportPage extends Component {
       this.props.history.push('/');
     }
   }
-  configureBudget = () => {
-    this.props.history.push('/goal');
+  openTopExpenses = () => {
+    this.props.history.push('/top_expenses/');
+  }
+  openBudgetSettings = () => {
+    this.props.history.push('/goal/');
   }
   generateReport = () => {
     const { incomeAfterBills, targetSavingsPercentage, plaidAccessToken } = this.props;
@@ -90,8 +95,17 @@ class GenerateReportPage extends Component {
         return !(filteredCategories.length > 0);
       });
 
-      const amountSpent = (filteredTransactions.map(t =>
-        t.amount).reduce((total, current) => total + current)).toFixed(0);
+      const topTransactions = filteredTransactions
+        .sort((a, b) => (a.amount < b.amount ? 1 : -1))
+        .slice(0, 3)
+        .map(t => `$${t.amount} at ${t.name}`);
+      this.props.actions.setTopTransactions(topTransactions);
+
+      const amountSpent = (filteredTransactions
+        .map(t => t.amount)
+        .reduce((total, current) => total + current)
+      ).toFixed(0);
+
       const targetSavings = (incomeAfterBills * (targetSavingsPercentage * 0.01)).toFixed(2);
       const budget = incomeAfterBills - targetSavings;
       this.setState({
@@ -128,9 +142,16 @@ class GenerateReportPage extends Component {
             </div>
             <div className={classes.buttonContainer}>
               <Button
-                onClick={this.configureBudget}
+                onClick={this.openBudgetSettings}
               >
-                Configure Budget
+                Budget Settings
+              </Button>
+            </div>
+            <div className={classes.buttonContainer}>
+              <Button
+                onClick={this.openTopExpenses}
+              >
+                Top Expenses
               </Button>
             </div>
           </div>
@@ -146,4 +167,8 @@ const mapStateToProps = state => ({
   plaidAccessToken: state.plaidAccessToken,
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(GenerateReportPage));
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({ setTopTransactions }, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(GenerateReportPage));
