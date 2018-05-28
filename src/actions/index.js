@@ -5,6 +5,7 @@ export const SET_PLAID_ACCESS_TOKEN = 'SET_PLAID_ACCESS_TOKEN';
 export const SET_USER_ID = 'SET_USER_ID';
 export const SET_PHONE_NUMBER = 'SET_PHONE_NUMBER';
 export const SET_INCOME_AFTER_BILLS = 'SET_INCOME_AFTER_BILLS';
+export const SET_TOP_TRANSACTIONS = 'SET_TOP_TRANSACTIONS';
 
 export const setUser = user => ({
   type: SET_USER,
@@ -39,4 +40,9 @@ export const setIncomeAfterBills = amount => ({
 export const setValue = (key, value) => ({
   type: SET_VALUE,
   payload: { key, value },
+});
+
+export const setTopTransactions = transactions => ({
+  type: SET_TOP_TRANSACTIONS,
+  payload: transactions,
 });

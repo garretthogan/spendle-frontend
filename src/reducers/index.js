@@ -6,6 +6,7 @@ import {
   SET_USER_ID,
   SET_PHONE_NUMBER,
   SET_INCOME_AFTER_BILLS,
+  SET_TOP_TRANSACTIONS,
 } from '../actions';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   targetSavingsPercentage: 0,
   incomeAfterBills: 0,
   spentThisMonth: 0,
+  topTransactions: [],
 };
 
 export default (state = initialState, action) => {
@@ -34,6 +36,8 @@ export default (state = initialState, action) => {
       return Object.assign({}, state, { phoneNumber: action.payload });
     case SET_INCOME_AFTER_BILLS:
       return Object.assign({}, state, { incomeAfterBills: action.payload });
+    case SET_TOP_TRANSACTIONS:
+      return Object.assign({}, state, { topTransactions: action.payload });
     default:
       return state;
   }
