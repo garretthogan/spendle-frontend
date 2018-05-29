@@ -41,6 +41,12 @@ export const saveBudget = userData => fetchToJson(`${baseUrl}/save_budget`, {
   headers,
 });
 
+export const generateReport = data => fetchToJson(`${baseUrl}/progress_report`, {
+  method: 'POST',
+  body: JSON.stringify(data),
+  headers,
+});
+
 export const getUser = (userId, accessToken) => fetchToJson(`${baseUrl}/user/${userId}?token=${accessToken}`)
   .catch(console.log);
 

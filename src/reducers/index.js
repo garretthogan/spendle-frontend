@@ -6,7 +6,7 @@ import {
   SET_USER_ID,
   SET_PHONE_NUMBER,
   SET_INCOME_AFTER_BILLS,
-  SET_TOP_TRANSACTIONS,
+  SET_PROGRESS_REPORT,
 } from '../actions';
 
 const initialState = {
@@ -16,7 +16,12 @@ const initialState = {
   phoneNumber: 11234567891,
   targetSavingsPercentage: 0,
   incomeAfterBills: 0,
-  spentThisMonth: 0,
+  totalSpent: 0,
+  spentLastWeek: 0,
+  spentYesterday: 0,
+  dailyBudget: 0,
+  remainingBudget: 0,
+  targetSavings: 0,
   topTransactions: [],
 };
 
@@ -36,8 +41,8 @@ export default (state = initialState, action) => {
       return Object.assign({}, state, { phoneNumber: action.payload });
     case SET_INCOME_AFTER_BILLS:
       return Object.assign({}, state, { incomeAfterBills: action.payload });
-    case SET_TOP_TRANSACTIONS:
-      return Object.assign({}, state, { topTransactions: action.payload });
+    case SET_PROGRESS_REPORT:
+      return Object.assign({}, state, { ...action.payload });
     default:
       return state;
   }
