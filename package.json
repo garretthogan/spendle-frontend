@@ -59,7 +59,7 @@
   "scripts": {
     "dev": "HTTPS=true node scripts/start.js",
     "start": "yarn build && serve -s build",
-    "build": "NODE_ENV=production BABEL_ENV=production node scripts/build.js",
+    "build": "node scripts/build.js",
     "build:dev": "NODE_ENV=development BABEL_ENV=development node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },
