@@ -21,7 +21,7 @@ const styles = () => ({
   reportContainer: {
     position: 'absolute',
     textAlign: 'center',
-    top: '40%',
+    top: '30%',
     left: '10%',
     width: '80%',
     fontSize: 18,
@@ -33,7 +33,7 @@ const getUpdateText = (remainingBudget, dailyBudget, targetSavings) => (remainin
   ` That's $${remainingBudget.toFixed(0) * -1} over your budget!
     Try to limit yourself to about $15  today.` :
   ` You have about $${(remainingBudget).toFixed(0)} remaining in your budget.
-    You should only spend $${dailyBudget.toFixed(0)} today if you still want to reach your goal of saving $${targetSavings}.`);
+    You should only spend $${dailyBudget.toFixed(0)} today if you still want to reach your goal of saving $${targetSavings.toFixed(0)}.`);
 
 const recurringTransactionKeys = [
   'Payment',
@@ -114,8 +114,8 @@ class GenerateReportPage extends Component {
         >
           <div className={classes.reportContainer}>
             <div>
-              Looks like you've spent about ${totalSpent} this month, and&nbsp;
-              ${spentLastWeek.toFixed(2)} last week.&nbsp;
+              Looks like you've spent about ${totalSpent.toFixed(0)} this month.&nbsp;
+              Last week you spent ${spentLastWeek.toFixed(0)}.&nbsp;
               {getUpdateText(remainingBudget, dailyBudget, targetSavings)}
             </div>
             <div className={classes.buttonContainer}>
