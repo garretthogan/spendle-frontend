@@ -70,8 +70,8 @@ class GenerateReportPage extends Component {
   openTopExpenses = () => {
     this.props.history.push('/top_expenses/');
   }
-  openBudgetSettings = () => {
-    this.props.history.push('/goal/');
+  openAccountSettings = () => {
+    this.props.history.push('/account_settings/');
   }
   generateReport = () => {
     const data = {
@@ -120,9 +120,9 @@ class GenerateReportPage extends Component {
             </div>
             <div className={classes.buttonContainer}>
               <Button
-                onClick={this.openBudgetSettings}
+                onClick={this.openAccountSettings}
               >
-                Budget Settings
+                Account Settings
               </Button>
             </div>
             <div className={classes.buttonContainer}>

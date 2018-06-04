@@ -10,14 +10,13 @@ const end = moment();
 
 const fetchToJson = (url, options) => fetch(url, options).then(res => res.json());
 
-export const getPublicKey = fbAccessToken => fetchToJson(`${baseUrl}/public_key?fbAccessToken=${fbAccessToken}`)
-  .catch(console.log);
+export const getPublicKey = fbAccessToken => fetchToJson(`${baseUrl}/public_key?fbAccessToken=${fbAccessToken}`);
 
 export const getAccessToken = publicKey => fetchToJson(`${baseUrl}/get_access_token`, {
   method: 'POST',
   body: JSON.stringify({ public_token: publicKey }),
   headers,
-}).catch(console.log);
+});
 
 export const getTransactions = (accessToken, dateRange = { start, end }) => fetchToJson(`${baseUrl}/transactions`, {
   method: 'POST',
@@ -27,7 +26,7 @@ export const getTransactions = (accessToken, dateRange = { start, end }) => fetc
     end_date: dateRange.end,
   }),
   headers,
-}).catch(console.log);
+});
 
 export const createBudget = (amount, frequency = 'monthly') => fetchToJson(`${baseUrl}/create_budget`, {
   method: 'POST',
@@ -47,8 +46,12 @@ export const generateReport = data => fetchToJson(`${baseUrl}/progress_report`, 
   headers,
 });
 
-export const getUser = (userId, accessToken) => fetchToJson(`${baseUrl}/user/${userId}?token=${accessToken}`)
-  .catch(console.log);
+export const getUser = (userId, accessToken) => fetchToJson(`${baseUrl}/user/${userId}?token=${accessToken}`);
+
+export const deleteUser = (userId, accessToken) => fetchToJson(`${baseUrl}/user/${userId}?token=${accessToken}`, {
+  method: 'DELETE',
+  headers,
+});
 
 const startOfMonth = monthsAgo => moment().subtract(monthsAgo, 'months').startOf('month');
 const endOfMonth = monthsAgo => moment().subtract(monthsAgo, 'months').endOf('month');

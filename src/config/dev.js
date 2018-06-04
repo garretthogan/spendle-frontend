@@ -1,4 +1,4 @@
-export const baseUrl = 'https://spendle-backend-test.herokuapp.com';
+export const baseUrl = 'http://localhost:8000';
 export const plaidEnv = 'sandbox';
 
 export default {
