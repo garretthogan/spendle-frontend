@@ -35,6 +35,9 @@ class AccountManagementPage extends Component {
       this.props.history.push('/');
     });
   }
+  configureBudget = () => {
+    this.props.history.push('/goal/');
+  }
   render() {
     const { classes } = this.props;
     const { deleting } = this.state;
@@ -52,6 +55,9 @@ class AccountManagementPage extends Component {
           <div>
             <div className={classes.buttonContainer}>
               <Button onClick={this.deleteProfile}>Delete Account</Button>
+            </div>
+            <div className={classes.buttonContainer}>
+              <Button onClick={this.configureBudget}>Configure Budget</Button>
             </div>
           </div>
         </Grow>
