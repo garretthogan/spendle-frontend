@@ -13,6 +13,7 @@ import LoginPage from './containers/LoginPage';
 import BudgetSavedPage from './containers/BudgetSavedPage';
 import GenerateReportPage from './containers/GenerateReportPage';
 import TopExpensesPage from './containers/TopExpensesPage';
+import AccountManagementPage from './containers/AccountManagementPage';
 import './App.css';
 
 const STATUS = {
@@ -62,12 +63,13 @@ class App extends Component {
     return (
       <div className={classes.main}>
         <Route exact path="/" component={LoginPage} />
-        <Route exact path="/connect_bank" component={BankAccessPage} />
-        <Route exact path="/saved" component={BudgetSavedPage} />
+        <Route exact path="/connect_bank/" component={BankAccessPage} />
+        <Route exact path="/saved/" component={BudgetSavedPage} />
         <Route exact path="/goal/" component={BudgetCalculatorPage} />
         <Route exact path="/update_settings/" component={UpdateSettingsPage} />
         <Route exact path="/generate_report/" component={GenerateReportPage} />
         <Route exact path="/top_expenses/" component={TopExpensesPage} />
+        <Route exact path="/account_settings/" component={AccountManagementPage} />
       </div>
     );
   }
