@@ -27,11 +27,11 @@ class AccountManagementPage extends Component {
     };
   }
   deleteProfile = () => {
-    const { userId, userAccessToken } = this.props;
+    const { userId, userAccessToken, plaidAccessToken } = this.props;
     this.setState({
       deleting: true,
     });
-    deleteUser(userId, userAccessToken).then(() => {
+    deleteUser(userId, userAccessToken, plaidAccessToken).then(() => {
       this.props.history.push('/');
     });
   }
@@ -69,6 +69,7 @@ class AccountManagementPage extends Component {
 const mapStateToProps = state => ({
   userId: state.userId,
   userAccessToken: state.userAccessToken,
+  plaidAccessToken: state.plaidAccessToken,
 });
 
 const mapDispatchToProps = () => ({ });

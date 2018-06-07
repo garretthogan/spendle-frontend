@@ -48,10 +48,11 @@ export const generateReport = data => fetchToJson(`${baseUrl}/progress_report`, 
 
 export const getUser = (userId, accessToken) => fetchToJson(`${baseUrl}/user/${userId}?token=${accessToken}`);
 
-export const deleteUser = (userId, accessToken) => fetchToJson(`${baseUrl}/user/${userId}?token=${accessToken}`, {
-  method: 'DELETE',
-  headers,
-});
+export const deleteUser = (userId, accessToken, plaidAccessToken) =>
+  fetchToJson(`${baseUrl}/user/${userId}?token=${accessToken}&plaid_token=${plaidAccessToken}`, {
+    method: 'DELETE',
+    headers,
+  });
 
 const startOfMonth = monthsAgo => moment().subtract(monthsAgo, 'months').startOf('month');
 const endOfMonth = monthsAgo => moment().subtract(monthsAgo, 'months').endOf('month');
